@@ -4,9 +4,11 @@ BitMat for RDF storage and join query processing. For more information please se
 
 # Example Usage
 Run the following commands to compile and execute:
-make clean<br/>
-make<br/>
-./bin/bitmat -l y -Q y -f ./config/my.conf -q ./config/my.query -o ./output/result.txt<br/>
+<pre>
+make clean
+make
+./bin/bitmat -l y -Q y -f ./config/my.conf -q ./config/my.query -o ./output/result.txt
+</pre>
 
 
 # More Information
