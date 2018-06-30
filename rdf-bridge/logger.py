@@ -3,6 +3,7 @@ Used to generate logs.
 """
 
 import os
+from datetime import datetime
 
 class Logger(object):
     
@@ -10,6 +11,7 @@ class Logger(object):
     data = ''
     write_offset = 1
     instance_id = 0
+    log_dir = '../log/'
 
     def __init__(self, filename='rdf-bridge.log', number=50, instance_id=0):
         """
@@ -19,11 +21,11 @@ class Logger(object):
             number: We need to write after x times
             instance_id: Unique id for the logging process
         """
-        self.file_obj = open(filename, 'a+')
+        self.file_obj = open(self.log_dir+filename, 'a+')
         self.number = number
         self.instance_id = instance_id
 
-    def write_log(self, message, level=1):
+    def write_log(self, message, level=1, to_print=True):
         """
         Writes data to the file
         Args:
@@ -33,9 +35,11 @@ class Logger(object):
         """
         
         message = message+'.'
-        message_to_log = str(self.instance_id)+'|'+message+'|'+self.get_debug_level(level, 1)+"\n"
+        message_to_log = str(self.instance_id)+'|'+datetime.now().strftime('%Y-%m-%d_%H')+'|'+message+'|'+self.get_debug_level(level, 1)+"\n"
         message_to_print = message+'|'+self.get_debug_level(level, 2)
-        print (message_to_print)
+        
+        if to_print:
+            print (message_to_print)
 
         self.data += message_to_log
 

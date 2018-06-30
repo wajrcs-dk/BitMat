@@ -6,29 +6,33 @@ TODO: add comments
 import logger
 import executer
 import sys
+import job
 import psutil
 
 if sys.version[0] == '2':
     reload(sys)
     sys.setdefaultencoding('utf8')
 
-import os
-from datetime import datetime
 pid = psutil.Process().pid
-loggerObj = logger.Logger(instance_id=pid)
-executerObj = executer.Executer()
-loggerObj.write_log('Program is started with process id: '+str(pid))
+logger_obj = logger.Logger(instance_id=pid)
+executer_obj = executer.Executer()
+logger_obj.write_log('Program is started with process id: '+str(pid))
 
 directory_name = '../data-store/'
-file_name = 'bitmat-sample'
+directory_name_bitmat = '../bitmat-data-store/'
+file_name = 'rdf-sample'
 file_prefix = 'full-'
+file_prefix_b = 'bitmat-'
 path_to_file = directory_name+file_prefix+file_name
+path_to_bitmat_file = directory_name_bitmat+file_prefix_b+file_name
 path_to_file_temp = directory_name+file_name
+partition_size=50
 
-loggerObj.write_log('Setup directory paths.')
+logger_obj.write_log('Setup directory paths.')
 
 commands = [
     'cat '+path_to_file_temp+'-1 '+path_to_file_temp+'-2 > '+path_to_file,
+    'wc -l < '+path_to_file+' > '+path_to_file+'-count',
     'sed -i \'s/://g\' '+path_to_file,
     'sed -i \'s/ /:/g\' '+path_to_file,
     'sort -u '+path_to_file+' | awk -F: \'{print $1}\' > '+path_to_file+'-sub',
@@ -55,16 +59,21 @@ commands = [
     'rm '+path_to_file+'-obj-left',
 ]
 
-loggerObj.write_log('Running commands.')
+logger_obj.write_log('Running commands.')
 
 for v in commands:
     
-    loggerObj.write_log('Command  started: '+v)
+    logger_obj.write_log('Command started: '+v)
     
-    output = executerObj.run(v)
+    output = executer_obj.run(v)
     if output[0] != 0:
-        loggerObj.write_log('Command Failed: '+v, 2)
+        logger_obj.write_log('Command failed with code ['+str(output[0])+']: '+v, 2)
     
-    loggerObj.write_log('Command finished: '+v)
+    logger_obj.write_log('Command finished: '+v)
 
-loggerObj.breakup_with_log()
+logger_obj.write_log('Executing job now')
+job_obj = job.Job(logger_obj, partition_size, path_to_file, path_to_bitmat_file)
+job_obj.execute()
+logger_obj.write_log('Job finished')
+
+logger_obj.breakup_with_log()
