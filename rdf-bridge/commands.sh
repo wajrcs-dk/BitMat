@@ -1,3 +1,7 @@
+mkdir ../bitmat-data-store/
+rm ../bitmat-data-store/*
+rm ../log/*
+
 cat ../data-store/bitmat-sample-1 ../data-store/bitmat-sample-2 > ../data-store/full-bitmat-sample
 sed -i 's/://g' ../data-store/full-bitmat-sample
 sed -i 's/ /:/g' ../data-store/full-bitmat-sample
@@ -39,3 +43,4 @@ rm ../data-store/full-bitmat-sample-sub-left
 
 rm ../data-store/full-bitmat-sample-obj-left
 
+python bootstrap.py "../data-store/rdf-sample-1 ../data-store/rdf-sample-2" 1

@@ -18,12 +18,9 @@ start_line = sys.argv[2]
 end_line = sys.argv[3]
 job_id = sys.argv[4]
 
-
 file_path_destination = '../bitmat-data-store/out_'+start_line+'_'+end_line+'_'+job_id
 file_obj = open(file_path_destination, 'w')
 line_numbers = range(int(start_line), int(end_line)+1)
-
-print line_numbers
 
 fp = open(file_path_source)
 for n,line in enumerate(fp):

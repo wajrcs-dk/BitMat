@@ -32,3 +32,9 @@
 *.app
 *.pyc
 bin/bitmat
+
+#logs & databases
+bitmat-data-store/*
+log/*
+data-store/*
+bitmat-data-store/*

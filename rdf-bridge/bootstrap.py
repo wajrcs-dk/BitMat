@@ -18,6 +18,13 @@ logger_obj = logger.Logger(instance_id=pid)
 executer_obj = executer.Executer()
 logger_obj.write_log('Program is started with process id: '+str(pid))
 
+if len(sys.argv) != 3:
+    logger_obj.write_log('Program needs path_to_file_temp and clean_logs params')
+    exit()
+
+path_to_file_temp  = sys.argv[1]
+clean_logs = sys.argv[2]
+
 directory_name = '../data-store/'
 directory_name_bitmat = '../bitmat-data-store/'
 file_name = 'rdf-sample'
@@ -25,13 +32,18 @@ file_prefix = 'full-'
 file_prefix_b = 'bitmat-'
 path_to_file = directory_name+file_prefix+file_name
 path_to_bitmat_file = directory_name_bitmat+file_prefix_b+file_name
-path_to_file_temp = directory_name+file_name
 partition_size=50
 
 logger_obj.write_log('Setup directory paths.')
 
+clean = [
+    'mkdir ../bitmat-data-store/',
+    'rm ../bitmat-data-store/*',
+    'rm ../log/*'
+]
+
 commands = [
-    'cat '+path_to_file_temp+'-1 '+path_to_file_temp+'-2 > '+path_to_file,
+    'cat '+path_to_file_temp+' > '+path_to_file,
     'wc -l < '+path_to_file+' > '+path_to_file+'-count',
     'sed -i \'s/://g\' '+path_to_file,
     'sed -i \'s/ /:/g\' '+path_to_file,
@@ -56,8 +68,11 @@ commands = [
     'cat '+path_to_file+'-common '+path_to_file+'-sub-left > '+path_to_file+'-sub-all',
     'cat '+path_to_file+'-common '+path_to_file+'-obj-left > '+path_to_file+'-obj-all',
     'rm '+path_to_file+'-sub-left',
-    'rm '+path_to_file+'-obj-left',
+    'rm '+path_to_file+'-obj-left'
 ]
+
+if clean_logs == '1':
+    commands = clean + commands
 
 logger_obj.write_log('Running commands.')
 
