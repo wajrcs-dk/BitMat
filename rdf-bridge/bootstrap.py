@@ -32,7 +32,7 @@ file_prefix = 'full-'
 file_prefix_b = 'bitmat-'
 path_to_file = directory_name+file_prefix+file_name
 path_to_bitmat_file = directory_name_bitmat+file_prefix_b+file_name
-partition_size=50
+partition_size=2500
 
 logger_obj.write_log('Setup directory paths.')
 
