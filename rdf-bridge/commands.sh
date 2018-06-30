@@ -43,4 +43,4 @@ rm ../data-store/full-bitmat-sample-sub-left
 
 rm ../data-store/full-bitmat-sample-obj-left
 
-python bootstrap.py "../data-store/rdf-sample-1 ../data-store/rdf-sample-2" 1
+python bootstrap.py "../data-store/rdf-sample-1 ../data-store/rdf-sample-2" 1  /usr/local/go/bin/go

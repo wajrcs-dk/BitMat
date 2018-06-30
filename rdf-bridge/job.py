@@ -1,5 +1,6 @@
 
 import os
+import sys
 import random
 import executer
 
@@ -52,7 +53,7 @@ class Job(object):
 
     def execute_go_cluster(self):
 
-        cmd = 'cd ../mini-go-cluster/ && go run src/bootstrap.go '+self.inp_file_name+' '+self.out_file_name+' '+self.err_file_name+' '+self.log_file
+        cmd = 'cd ../mini-go-cluster/ && '+sys.argv[3]+' run src/bootstrap.go '+self.inp_file_name+' '+self.out_file_name+' '+self.err_file_name+' '+self.log_file
         self.logger_obj.write_log('Command started: '+cmd)
         executer_obj = executer.Executer()
         output = executer_obj.run(cmd)

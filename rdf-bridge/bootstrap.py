@@ -18,8 +18,8 @@ logger_obj = logger.Logger(instance_id=pid)
 executer_obj = executer.Executer()
 logger_obj.write_log('Program is started with process id: '+str(pid))
 
-if len(sys.argv) != 3:
-    logger_obj.write_log('Program needs path_to_file_temp and clean_logs params')
+if len(sys.argv) != 4:
+    logger_obj.write_log('Program needs path_to_file_temp, clean_logs params and go path')
     exit()
 
 path_to_file_temp  = sys.argv[1]
