@@ -43,7 +43,7 @@ for n,line in enumerate(fp):
     data = line.rstrip().split(' ')
     data_ids = []
     
-    cmd = 'grep -n \''+data[0]+'\' '+file_path_source+'-sub-all'
+    cmd = 'grep -m 1 -n \''+data[0]+'\' '+file_path_source+'-sub-all'
     output = executer_obj.run(cmd, [], to_print)
 
     logger_obj.write_log('Running command: '+cmd, 1, to_print)
@@ -55,7 +55,7 @@ for n,line in enumerate(fp):
         if len(result) == 2:
             data_ids.append(result[0])
 
-    cmd = 'grep -n \''+data[1]+'\' '+file_path_source+'-pre-all'
+    cmd = 'grep -m 1 -n \''+data[1]+'\' '+file_path_source+'-pre-all'
     output = executer_obj.run(cmd, [], to_print)
     if output[0] == 0:
         result = output[1]
@@ -64,7 +64,7 @@ for n,line in enumerate(fp):
         if len(result) == 2:
             data_ids.append(result[0])
 
-    cmd = 'grep -n \''+data[2]+'\' '+file_path_source+'-obj-all'
+    cmd = 'grep -m 1 -n \''+data[2]+'\' '+file_path_source+'-obj-all'
     output = executer_obj.run(cmd, [], to_print)
     if output[0] == 0:
         result = output[1]
