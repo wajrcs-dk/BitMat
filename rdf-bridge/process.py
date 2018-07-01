@@ -23,45 +23,60 @@ logger_obj.write_log('Program is started with process id: '+str(pid), 1, to_prin
 file_path_destination = '../bitmat-data-store/out_'+start_line+'_'+end_line+'_'+job_id
 file_obj = open(file_path_destination, 'w')
 line_numbers = range(int(start_line), int(end_line)+1)
+total = len(line_numbers)-1
+
+logger_obj.write_log('Reading file', 1, to_print)
 
 fp = open(file_path_source)
 for n,line in enumerate(fp):
-    if n+1 in line_numbers: # or n in [25,29] 
-        data = line.rstrip().split(' ')
-        data_ids = []
-        
-        cmd = 'grep -n \''+data[0]+'\' '+file_path_source+'-sub-all'
-        output = executer_obj.run(cmd, [], to_print)
 
-        if output[0] == 0:
-            result = output[1]
-            logger_obj.write_log('Result fo sub on line '+str(n+1)+' with res: '+result, 1, to_print)
-            result = result.split(':', 1)
-            if len(result) == 2:
-                data_ids.append(result[0])
+    m = n+1
 
-        cmd = 'grep -n \''+data[1]+'\' '+file_path_source+'-pre-all'
-        output = executer_obj.run(cmd, [], to_print)
-        if output[0] == 0:
-            result = output[1]
-            logger_obj.write_log('Result fo pre on line '+str(n+1)+' with res: '+result, 1, to_print)
-            result = result.split(':', 1)
-            if len(result) == 2:
-                data_ids.append(result[0])
+    if (m < line_numbers[0]):
+        continue
 
-        cmd = 'grep -n \''+data[2]+'\' '+file_path_source+'-obj-all'
-        output = executer_obj.run(cmd, [], to_print)
-        if output[0] == 0:
-            result = output[1]
-            logger_obj.write_log('Result fo obj on line '+str(n+1)+' with res: '+result, 1, to_print)
-            result = result.split(':', 1)
-            if len(result) == 2:
-                data_ids.append(result[0])
+    if (m > line_numbers[total]):
+        break
+    
+    logger_obj.write_log('Reading line '+str(m), 1, to_print)
 
-        if len(data_ids) == 3:
-            file_obj.write(data_ids[0]+':'+data_ids[1]+':'+data_ids[2]+"\n")
-        else:
-            logger_obj.write_log('Data length on line '+str(n+1)+' is not 3: '+str(len(data_ids)), 3, to_print)
+    data = line.rstrip().split(' ')
+    data_ids = []
+    
+    cmd = 'grep -n \''+data[0]+'\' '+file_path_source+'-sub-all'
+    output = executer_obj.run(cmd, [], to_print)
+
+    logger_obj.write_log('Running command: '+cmd, 1, to_print)
+
+    if output[0] == 0:
+        result = output[1]
+        logger_obj.write_log('Result fo sub on line '+str(m)+' with res: '+result, 1, to_print)
+        result = result.split(':', 1)
+        if len(result) == 2:
+            data_ids.append(result[0])
+
+    cmd = 'grep -n \''+data[1]+'\' '+file_path_source+'-pre-all'
+    output = executer_obj.run(cmd, [], to_print)
+    if output[0] == 0:
+        result = output[1]
+        logger_obj.write_log('Result fo pre on line '+str(m)+' with res: '+result, 1, to_print)
+        result = result.split(':', 1)
+        if len(result) == 2:
+            data_ids.append(result[0])
+
+    cmd = 'grep -n \''+data[2]+'\' '+file_path_source+'-obj-all'
+    output = executer_obj.run(cmd, [], to_print)
+    if output[0] == 0:
+        result = output[1]
+        logger_obj.write_log('Result fo obj on line '+str(m)+' with res: '+result, 1, to_print)
+        result = result.split(':', 1)
+        if len(result) == 2:
+            data_ids.append(result[0])
+
+    if len(data_ids) == 3:
+        file_obj.write(data_ids[0]+':'+data_ids[1]+':'+data_ids[2]+"\n")
+    else:
+        logger_obj.write_log('Data length on line '+str(m)+' is not 3: '+str(len(data_ids)), 3, to_print)
 
 fp.close()
 file_obj.close()
