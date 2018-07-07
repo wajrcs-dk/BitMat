@@ -11,9 +11,9 @@ class Logger(object):
     data = ''
     write_offset = 1
     instance_id = 0
-    log_dir = '../log/'
+    log_dir = 'log/'
 
-    def __init__(self, filename='rdf-bridge.log', number=50, instance_id=0):
+    def __init__(self, filename, number=50, instance_id=0):
         """
         Constructor
         Args:

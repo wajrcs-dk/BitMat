@@ -38,3 +38,5 @@ bitmat-data-store/*
 log/*
 data-store/*
 bitmat-data-store/*
+database/*
+config/*

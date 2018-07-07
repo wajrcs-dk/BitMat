@@ -20,7 +20,7 @@ if len(sys.argv) == 6:
     to_print = True
 logger_obj.write_log('Program is started with process id: '+str(pid), 1, to_print)
 
-file_path_destination = '../bitmat-data-store/out_'+start_line+'_'+end_line+'_'+job_id
+file_path_destination = 'bitmat-data-store/out_'+start_line+'_'+end_line+'_'+job_id
 file_obj = open(file_path_destination, 'w')
 line_numbers = range(int(start_line), int(end_line)+1)
 total = len(line_numbers)-1

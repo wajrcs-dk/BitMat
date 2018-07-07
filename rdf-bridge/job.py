@@ -32,7 +32,7 @@ class Job(object):
         self.logger_obj.write_log('Generating input file started')
 
         startLimit = 1
-        job = 'python ../rdf-bridge/process.py'
+        job = 'python rdf-bridge/process.py'
 
         file_obj = open(self.inp_file_name, 'w')
         count = int(count)
@@ -53,7 +53,7 @@ class Job(object):
 
     def execute_go_cluster(self):
 
-        cmd = 'cd ../mini-go-cluster/ && '+sys.argv[3]+' run src/bootstrap.go '+self.inp_file_name+' '+self.out_file_name+' '+self.err_file_name+' '+self.log_file
+        cmd = sys.argv[2]+' run mini-go-cluster/src/bootstrap.go '+self.inp_file_name+' '+self.out_file_name+' '+self.err_file_name+' '+self.log_file
         self.logger_obj.write_log('Command started: '+cmd)
         executer_obj = executer.Executer()
         output = executer_obj.run(cmd)
@@ -97,7 +97,7 @@ class Job(object):
         self.logger_obj.write_log('Job execution started')
 
         self.job_id = str(random.randint(1,10000))
-        path = '../log/'
+        path = 'log/'
         self.inp_file_name = path+'inp-rdf-process-'+self.job_id
         self.out_file_name = path+'out-rdf-process-'+self.job_id
         self.err_file_name = path+'err-rdf-process-'+self.job_id
@@ -108,13 +108,18 @@ class Job(object):
         self.logger_obj.write_log('Out file: '+self.out_file_name)
         self.logger_obj.write_log('Err file: '+self.err_file_name)
         
-        fp_counter = open(self.path_to_file+'-count', 'r')
-        read_lines = fp_counter.readlines()
-        fp_counter.close()
-        count = [line.rstrip('\n') for line in read_lines]
-        count = str(count[0])
-        self.logger_obj.write_log('Count calulated from file is: '+count)
+        count = self.get_count(self.path_to_file)
 
         self.generate_input(count)
         self.execute_go_cluster()
         self.parse_output()
+
+    def get_count(self, path_to_file):
+
+        fp_counter = open(path_to_file+'-count', 'r')
+        read_lines = fp_counter.readlines()
+        fp_counter.close()
+        count = [line.rstrip('\n') for line in read_lines]
+        count = str(count[0])
+        self.logger_obj.write_log('Count calulated from file '+path_to_file+' is: '+count)
+        return count
