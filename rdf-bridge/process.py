@@ -3,6 +3,9 @@ import sys
 import executer
 import psutil
 import logger
+import redis
+
+r = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 if sys.version[0] == '2':
     reload(sys)
@@ -43,6 +46,7 @@ for n,line in enumerate(fp):
     data = line.rstrip().split(' ')
     data_ids = []
     
+    '''
     cmd = 'grep -m 1 -n \''+data[0]+'\' '+file_path_source+'-sub-all'
     output = executer_obj.run(cmd, [], to_print)
 
@@ -72,6 +76,11 @@ for n,line in enumerate(fp):
         result = result.split(':', 1)
         if len(result) == 2:
             data_ids.append(result[0])
+    '''
+
+    data_ids.append(r.get('sub-'+data[0]))
+    data_ids.append(r.get('pre-'+data[1]))
+    data_ids.append(r.get('obj-'+data[2]))
 
     if len(data_ids) == 3:
         file_obj.write(data_ids[0]+':'+data_ids[1]+':'+data_ids[2]+"\n")

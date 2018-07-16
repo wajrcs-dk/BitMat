@@ -92,7 +92,10 @@ def generateBitMatDatabase():
         'cat '+path_to_file+'-common '+path_to_file+'-sub-left > '+path_to_file+'-sub-all',
         'cat '+path_to_file+'-common '+path_to_file+'-obj-left > '+path_to_file+'-obj-all',
         'rm '+path_to_file+'-sub-left',
-        'rm '+path_to_file+'-obj-left'
+        'rm '+path_to_file+'-obj-left',
+        'python rdf-bridge/load-rdf.py sub '+path_to_file+' '+str(partition_size),
+        'python rdf-bridge/load-rdf.py pre '+path_to_file+' '+str(partition_size),
+        'python rdf-bridge/load-rdf.py obj '+path_to_file+' '+str(partition_size)
     ]
     executeCommands(commands)
     logger_obj.write_log('Finished commands to generate BitMat Database')
