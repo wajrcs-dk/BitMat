@@ -44,3 +44,5 @@ rm ../data-store/full-bitmat-sample-sub-left
 rm ../data-store/full-bitmat-sample-obj-left
 
 python rdf-bridge/bootstrap.py "data-store/rdf-sample-1 data-store/rdf-sample-2" /usr/local/go/bin/go config/rdf-sample.conf all 100 rdf-sample
+
+python rdf-bridge/bootstrap.py /raid0/datasets/lubm/lubmsample /home/alamgir/go/bin/go config/rdf-sample.conf all 25000 rdfs-1-7
