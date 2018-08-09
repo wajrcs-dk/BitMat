@@ -66,7 +66,7 @@ def responseIndex() :
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="">
         <meta name="author" content="">
-        <title>KEWS - Project</title>
+        <title>RDF Query Processor</title>
         <link href="static/css/bootstrap.min.css" rel="stylesheet">
         <style>
         #result { height: 530px; }
@@ -89,19 +89,20 @@ def responseIndex() :
                 <div class="col-md-4">
                     <form role="form" action="#">
                         <div class="form-group">
-                            <label for="select_config">Select config</label>
+                            <label for="select_config">Select Config (*.conf)</label>
                             <select class="form-control" id="select_config">
     """
 
     for i in file_list:
-        body = body + '<option value="'+i+'">'+i+'</option>'
+        if i.find('.conf') != -1:
+            body = body + '<option value="'+i+'">'+i+'</option>'
 
     body = body + """
                             </select>
                         </div>
 
                         <div class="form-group">
-                            <label for="select_query">Select query</label>
+                            <label for="select_query">Select Query (Working: 1, 2, 3, 11, 14)</label>
                             <select class="form-control" id="select_query">
                                 <option value="0">Select query</option>
                                 <option value="1">1</option>
@@ -169,6 +170,7 @@ def responseIndex() :
     return resp
 
 def write_query(query_no, output_query):
+    output_query = output_query.replace('<br/>', "\n")
     file = 'config/input_query_'+query_no+'.sql'
     file_obj = open(file, 'w')
     file_obj.write(output_query)
@@ -204,7 +206,7 @@ def responseQuery(input_query_init, query_no, config) :
     output_query = qParser.parser()
     result = ''
      
-    if len(output_query) > 2:
+    if len(output_query) > 2 and output_query.find('Redis > ') == -1:
         output_query_file = ''
         
         if query_no == True:
@@ -217,11 +219,13 @@ def responseQuery(input_query_init, query_no, config) :
         output = executer_obj.run(cmd)
         bitmat_print = output[1]
         query_response = read_output()
-        result = result + '<div style="color: blue">Generated query:</div><br/>'
+        result = result + '<div style="color: blue">Generated Query:</div>'
         result = result + output_query+'<br/><br/>'
-        result = result + '<div style="color: blue">Query response:</div><br/>'
+        result = result + '<div style="color: blue">Query Response:</div>'
         result = result + query_response+'<br/><br/>'
-        result = result + '<div style="color: blue">BitMat print:</div><br/>'
+        result = result + '<div style="color: blue">BitMat Cmd:</div>'
+        result = result + cmd+'<br/><br/>'
+        result = result + '<div style="color: blue">BitMat Output:</div>'
         result = result + bitmat_print+'<br/><br/>'
 
         return result

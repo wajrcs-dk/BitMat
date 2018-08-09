@@ -275,8 +275,12 @@ int main(int args, char **argv)
 
 	if (querydata) {
 
+		cout << "*********** QUERING NOW ***********" << endl;
+
 		parse_query_and_build_graph(qfile[0]);
 //		parse_query_and_build_graph(qfile2);
+
+		cout << "Done with parse_query_and_build_graph" << endl;
 
 		gettimeofday(&start_time, (struct timezone *)0);
 		t_start = clock();

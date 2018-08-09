@@ -155,7 +155,11 @@ class Parser(object):
                             else:
                                 output_query = output_query + '0'
                         else:
-                            output_query = output_query + r.get('obj-'+o)
+                            if r.get('obj-'+o) == None:
+                                output_query = 'Redis > 404 error for o: '+self.escape(o)+'<br/>'
+                                break
+                            else:
+                                output_query = output_query + r.get('obj-'+o)
 
                         output_query = output_query + '<br/>'
                     else:
@@ -165,6 +169,6 @@ class Parser(object):
             output_query = '1'
 
         if len(output_query) != 1:
-            output_query = output_query + '#####################################'+self.escape(self.input_query);
+            output_query = output_query + '#####################################<br/>'+self.escape(self.input_query);
 
         return output_query

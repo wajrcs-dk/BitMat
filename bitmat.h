@@ -68,7 +68,7 @@ using namespace std;
 
 #define	ASSERT_ON			0
 #define	REALLOC_ON			0
-#define DEBUG				0
+#define DEBUG				1
 
 #define WHITE				10
 #define GREY				11
