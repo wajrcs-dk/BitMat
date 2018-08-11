@@ -11,11 +11,13 @@ import os.path
 import psutil
 import urllib
 import executer
+import redis
 
 if sys.version[0] == '2':
     reload(sys)
     sys.setdefaultencoding('utf8')
 
+r = redis.StrictRedis(host='localhost', port=6379, db=0)
 pid = psutil.Process().pid
 logger_obj = logger.Logger(filename='rdf-query-interface.log', instance_id=pid)
 logger_obj.write_log('RDF query interface program has started with process id: '+str(pid))
@@ -177,12 +179,46 @@ def write_query(query_no, output_query):
     file_obj.close()
     return file
 
+def parse_query_output(row_data, prefix, index, return_str):
+    get = r.get(prefix+'-'+row_data[index])
+
+    if get != None:
+        return_str = return_str + get
+    else:
+        return_str = return_str + row_data[index]
+    
+    if index == 5:
+        return_str = return_str + "\n"
+    else:
+        return_str = return_str + '|'
+
+    return return_str
+
 def read_output():
+    return_str = 'Subject|Predicate|Object - Subject|Predicate|Object'+"\n"
+    qp_obj = parser.Parser('')
+
     try:
         with open('output/rdf-query-interface.txt', 'r') as f:
-            return f.read()
-    except Exception:
-        return ''
+            result = f.read()
+            rows = result.split("\n")
+
+            for row_data in rows:
+                row_data = row_data.split(':')
+
+                if len(row_data) == 6:
+                    return_str = parse_query_output(row_data, 'sub', 0, return_str)
+                    return_str = parse_query_output(row_data, 'pre', 1, return_str)
+                    return_str = parse_query_output(row_data, 'obj', 2, return_str)
+                    return_str = return_str + ' - '
+                    return_str = parse_query_output(row_data, 'sub', 3, return_str)
+                    return_str = parse_query_output(row_data, 'pre', 4, return_str)
+                    return_str = parse_query_output(row_data, 'obj', 5, return_str)
+
+            return qp_obj.escape(return_str)
+    except Exception as e:
+        print(e.message)
+        return e.message
 
 def responseQuery(input_query_init, query_no, config) :
     """
@@ -214,15 +250,20 @@ def responseQuery(input_query_init, query_no, config) :
         else:
             output_query_file = write_query('random', output_query)
         
-        cmd = 'bin/bitmat -l y -Q y -f '+config+' -q '+output_query_file+' -o output/rdf-query-interface.txt'
         executer_obj = executer.Executer()
+        
+        cmd = 'echo '' > output/rdf-query-interface.txt'
+        output = executer_obj.run(cmd)
+
+        cmd = 'bin/bitmat -l y -Q y -f '+config+' -q '+output_query_file+' -o output/rdf-query-interface.txt'
         output = executer_obj.run(cmd)
         bitmat_print = output[1]
+
         query_response = read_output()
         result = result + '<div style="color: blue">Generated Query:</div>'
         result = result + output_query+'<br/><br/>'
         result = result + '<div style="color: blue">Query Response:</div>'
-        result = result + query_response+'<br/><br/>'
+        result = result + query_response+'<br/>'
         result = result + '<div style="color: blue">BitMat Cmd:</div>'
         result = result + cmd+'<br/><br/>'
         result = result + '<div style="color: blue">BitMat Output:</div>'

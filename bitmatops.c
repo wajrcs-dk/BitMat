@@ -2034,7 +2034,10 @@ void match_triples_in_row(BitMat *bitmat, struct row *r, struct node *n,
 				if((curr_nodenum+1) == graph_tp_nodes) { 
 					// Print the mapping.
 					//cout << "Map size " << q_to_gr_node_map.size() << endl;
+					bool output_line = false;
 					for(map<TP*, TP>::iterator it=q_to_gr_node_map.begin(); it != q_to_gr_node_map.end(); it++) {
+						
+/*
 						if ((it->first)->sub <= 0) {
 							fprintf(outfile, "%u:", (it->second).sub);
 						}
@@ -2044,6 +2047,13 @@ void match_triples_in_row(BitMat *bitmat, struct row *r, struct node *n,
 						if ((it->first)->obj <= 0) {
 							fprintf(outfile, "%u:", (it->second).obj);
 						}
+*/
+						if (output_line) {
+							fprintf(outfile, ":");
+						} else {
+							output_line = true;
+						}
+						fprintf(outfile, "%u:%u:%u", (it->second).sub, (it->second).pred, (it->second).obj);
 
 //						fprintf(outfile, "%d:%d:%d:", (it->second).sub, (it->second).pred, (it->second).obj);
 //						fprintf(stdout, "%d:%d:%d => ", (it->first)->sub, (it->first)->pred, (it->first)->obj);
@@ -2244,7 +2254,9 @@ void match_query_graph(struct node* n, int curr_nodenum, struct node *parent, FI
 
 						//Output a matching
 						if((curr_nodenum+1) == graph_tp_nodes) {
+							bool output_line = false;
 							for(map<TP*, TP>::iterator it=q_to_gr_node_map.begin(); it != q_to_gr_node_map.end(); it++) {
+								/*
 								if ((it->first)->sub <= 0) {
 									fprintf(outfile, "%u:", (it->second).sub);
 								}
@@ -2254,6 +2266,13 @@ void match_query_graph(struct node* n, int curr_nodenum, struct node *parent, FI
 								if ((it->first)->obj <= 0) {
 									fprintf(outfile, "%u:", (it->second).obj);
 								}
+*/
+								if (output_line) {
+									fprintf(outfile, ":");
+								} else {
+									output_line = true;
+								}
+								fprintf(outfile, "%u:%u:%u", (it->second).sub, (it->second).pred, (it->second).obj);
 
 //								fprintf(outfile, "%u:%u:%u:", (it->second).sub, (it->second).pred, (it->second).obj);
 //								fprintf(stdout, "%d:%d:%d => ", (it->first)->sub, (it->first)->pred, (it->first)->obj);
@@ -2359,7 +2378,9 @@ void match_query_graph(struct node* n, int curr_nodenum, struct node *parent, FI
 //						cout << endl;
 						//Output a matching
 						if((curr_nodenum+1) == graph_tp_nodes) {
+							bool output_line = false;
 							for(map<TP*, TP>::iterator it=q_to_gr_node_map.begin(); it != q_to_gr_node_map.end(); it++) {
+								/*
 								if ((it->first)->sub <= 0) {
 									fprintf(outfile, "%u:", (it->second).sub);
 								}
@@ -2369,6 +2390,14 @@ void match_query_graph(struct node* n, int curr_nodenum, struct node *parent, FI
 								if ((it->first)->obj <= 0) {
 									fprintf(outfile, "%u:", (it->second).obj);
 								}
+								*/
+
+								if (output_line) {
+									fprintf(outfile, ":");
+								} else {
+									output_line = true;
+								}
+								fprintf(outfile, "%u:%u:%u", (it->second).sub, (it->second).pred, (it->second).obj);
 
 //								fprintf(outfile, "%d:%d:%d:", (it->second).sub, (it->second).pred, (it->second).obj);
 //								fprintf(stdout, "%d:%d:%d => ", (it->first)->sub, (it->first)->pred, (it->first)->obj);

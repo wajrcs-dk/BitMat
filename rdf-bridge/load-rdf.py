@@ -15,6 +15,7 @@ fp = open(file_path+'-'+prfix+'-all')
 for n,line in enumerate(fp):
     line = line.replace("\n", '')
     r.set(prfix+'-'+line, str(n+1))
+    r.set(prfix+'-'+str(n+1), line)
 
     if n%mod == 0:
         print str(n+1), ':' , line
