@@ -135,7 +135,7 @@ def responseIndex() :
                 </div>
             </div>
         </div>
-        <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="static/js/jquery-3.3.1.min.js"></script>
         <script type="text/javascript">
         var query = $('#query');
         var select_config = $('#select_config');
@@ -257,7 +257,7 @@ def responseQuery(input_query_init, query_no, config) :
         cmd = 'echo '' > output/rdf-query-interface.txt'
         output = executer_obj.run(cmd)
 
-        cmd = 'bin/bitmat -l y -Q y -f '+config+' -q '+output_query_file+' -o output/rdf-query-interface.txt'
+        cmd = 'bin/bitmat -l n -Q y -f '+config+' -q '+output_query_file+' -o output/rdf-query-interface.txt'
         output = executer_obj.run(cmd)
         bitmat_print = output[1]
 
