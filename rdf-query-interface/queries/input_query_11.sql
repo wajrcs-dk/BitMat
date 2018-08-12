@@ -4,5 +4,5 @@ SELECT ?X
 WHERE
 {
     ?X rdf:type <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#ResearchGroup> .
-    ?X ub:subOrganizationOf <http://www.University0.edu>
+    ?X ub:subOrganizationOf <http://www.Department0.University0.edu>
 }

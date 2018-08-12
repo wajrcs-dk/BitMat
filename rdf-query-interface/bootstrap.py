@@ -91,7 +91,7 @@ def responseIndex() :
                 <div class="col-md-4">
                     <form role="form" action="#">
                         <div class="form-group">
-                            <label for="select_config">Select Config (*.conf)</label>
+                            <label for="select_config">Select Config (*.conf*)</label>
                             <select class="form-control" id="select_config">
     """
 
@@ -187,7 +187,9 @@ def parse_query_output(row_data, prefix, index, return_str):
     else:
         return_str = return_str + row_data[index]
     
-    if index == 5:
+    if index == 2:
+        return_str = return_str + ""
+    elif index == 5:
         return_str = return_str + "\n"
     else:
         return_str = return_str + '|'
