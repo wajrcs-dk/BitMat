@@ -3,6 +3,6 @@ PREFIX ub: <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
 SELECT ?X
 WHERE
 {
-    ?X rdf:type <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#GraduateStudent> .
+    ?X rdf:type <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#Student> .
     ?X ub:takesCourse <http://www.Department0.University0.edu/GraduateCourse0>
 }

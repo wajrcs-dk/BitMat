@@ -3,5 +3,5 @@ PREFIX ub: <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
 SELECT ?X 
 WHERE
 {
-    ?X rdf:type <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#Student>
+    ?X rdf:type <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#UndergraduateStudent>
 }

@@ -3,7 +3,7 @@ PREFIX ub: <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
 SELECT ?X, ?Y, ?Z
 WHERE
 {
-    ?X rdf:type <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#Student> .
+    ?X rdf:type <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#GraduateStudent> .
     ?Y rdf:type <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#Department> .
     ?X ub:memberOf ?Y .
     ?Y ub:subOrganizationOf <http://www.University0.edu> .

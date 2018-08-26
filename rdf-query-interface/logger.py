@@ -78,3 +78,6 @@ class Logger(object):
         self.file_obj.write(self.data)
         self.file_obj.flush()
         self.file_obj.close()
+
+    def debug(self, msg, vars):
+        print msg + ': ' + str(vars)
