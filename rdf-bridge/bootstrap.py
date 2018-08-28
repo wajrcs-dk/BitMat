@@ -43,6 +43,8 @@ def executeCommands(commands, exe):
         logger_obj.write_log('Command started: '+v)
         if exe == True:
             output = executer_obj.run(v)
+        else:
+            return
         if output[0] != 0:
             logger_obj.write_log('Command failed with code ['+str(output[0])+']: '+v, 2)
         logger_obj.write_log('Command finished: '+v)
