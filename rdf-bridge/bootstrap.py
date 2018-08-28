@@ -38,10 +38,11 @@ logger_obj.write_log('Setup directory paths.')
 
 ''' Executes commands
 '''
-def executeCommands(commands):
+def executeCommands(commands, exe):
     for v in commands:
         logger_obj.write_log('Command started: '+v)
-        output = executer_obj.run(v)
+        if exe == True:
+            output = executer_obj.run(v)
         if output[0] != 0:
             logger_obj.write_log('Command failed with code ['+str(output[0])+']: '+v, 2)
         logger_obj.write_log('Command finished: '+v)
@@ -56,12 +57,12 @@ def cleanLogs():
         'rm log/*',
         'rm database/*'
     ]
-    executeCommands(clean)
+    executeCommands(clean, True)
     logger_obj.write_log('Finished cleaning logs')
 
 ''' Generates BitMat Database
 '''
-def generateBitMatDatabase():
+def generateBitMatDatabase(test):
     logger_obj.write_log('Running commands to generate BitMat Database')
     commands = [
         'cat '+path_to_file_temp+' > '+path_to_file,
@@ -97,7 +98,7 @@ def generateBitMatDatabase():
         'python rdf-bridge/load-rdf.py pre '+path_to_file+' '+str(partition_size),
         'python rdf-bridge/load-rdf.py obj '+path_to_file+' '+str(partition_size)
     ]
-    executeCommands(commands)
+    executeCommands(commands, test)
     logger_obj.write_log('Finished commands to generate BitMat Database')
 
 ''' Execute job to conert string to interger ids in BitMat database
@@ -118,7 +119,7 @@ def buildIndexes():
         'sort -u -n -t: -k1 -k2 -k3 '+path_to_bitmat_file+' | awk -F: \'{print $2":"$1":"$3}\' > '+path_to_bitmat_file+'_pso',
         'sort -u -n -t: -k3 -k2 -k1 '+path_to_bitmat_file+' | awk -F: \'{print $2":"$3":"$1}\' > '+path_to_bitmat_file+'_pos',
     ]
-    executeCommands(commands)
+    executeCommands(commands, True)
     logger_obj.write_log('Finished commands to generate Indexes')
 
 ''' Make config file
@@ -152,14 +153,16 @@ def makeConfig():
 
 if sys.argv[4] == 'all':
     cleanLogs()
-    generateBitMatDatabase()
+    generateBitMatDatabase(True)
     convertStringToInt()
     buildIndexes()
     makeConfig()
 elif sys.argv[4] == 'clean':
     cleanLogs()
 elif sys.argv[4] == 'generate':
-    generateBitMatDatabase()
+    generateBitMatDatabase(True)
+elif sys.argv[4] == 'test':
+    generateBitMatDatabase(False)
 elif sys.argv[4] == 'convert':
     convertStringToInt()
 elif sys.argv[4] == 'build':
