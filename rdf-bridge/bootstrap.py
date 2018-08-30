@@ -31,6 +31,7 @@ file_name = sys.argv[6]
 file_prefix = 'full-'
 file_prefix_b = 'bitmat-'
 path_to_file = directory_name+file_prefix+file_name
+path_to_temp_file = directory_name+file_prefix
 path_to_bitmat_file = directory_name_bitmat+file_prefix_b+file_name
 path_to_bitmat_file_config = path_to_bitmat_file
 
@@ -66,19 +67,41 @@ def cleanLogs():
 '''
 def generateBitMatDatabase(test):
     logger_obj.write_log('Running commands to generate BitMat Database')
-    commands = [
-        'cat '+path_to_file_temp+' > '+path_to_file,
-        'wc -l < '+path_to_file+' > '+path_to_file+'-count',
-        'sed -i \'s/://g\' '+path_to_file,
-        'sed -i \'s/ /:/g\' '+path_to_file,
-        'sort -u '+path_to_file+' | awk -F: \'{print $1}\' > '+path_to_file+'-sub',
-        'sed -i \'s/\/\//:\/\//g\' '+path_to_file+'-sub',
-        'sort -u '+path_to_file+' | awk -F: \'{print $2}\' > '+path_to_file+'-pre',
-        'sed -i \'s/\/\//:\/\//g\' '+path_to_file+'-pre',
-        'sort -u '+path_to_file+' | awk -F: \'{print $3}\' > '+path_to_file+'-obj',
-        'sed -i \'s/\/\//:\/\//g\' '+path_to_file+'-obj',
-        'sed -i \'s/:/ /g\' '+path_to_file,
-        'sed -i \'s/\/\//:\/\//g\' '+path_to_file,
+
+    path_to_file_temp_list = path_to_file_temp.split(' ')
+    commands_part1 = []
+    sub_all = ''
+    pre_all = ''
+    obj_all = ''
+
+    for index in path_to_file_temp_list:
+        file_name_temp = index.split('/')
+        file_name_temp = path_to_temp_file+file_name_temp[-1]
+        cmd_set = [
+            'cat '+index+' > '+file_name_temp,
+            'sed -i \'s/://g\' '+file_name_temp,
+            'sed -i \'s/ /:/g\' '+file_name_temp,
+            'sort -u '+file_name_temp+' | awk -F: \'{print $1}\' > '+file_name_temp+'-sub',
+            'sed -i \'s/\/\//:\/\//g\' '+file_name_temp+'-sub',
+            'sort -u '+file_name_temp+' | awk -F: \'{print $2}\' > '+file_name_temp+'-pre',
+            'sed -i \'s/\/\//:\/\//g\' '+file_name_temp+'-pre',
+            'sort -u '+file_name_temp+' | awk -F: \'{print $3}\' > '+file_name_temp+'-obj',
+            'sed -i \'s/\/\//:\/\//g\' '+file_name_temp+'-obj',
+            'sed -i \'s/:/ /g\' '+file_name_temp,
+            'sed -i \'s/\/\//:\/\//g\' '+file_name_temp,
+        ]
+        sub_all = sub_all + file_name_temp+'-sub '
+        pre_all = pre_all + file_name_temp+'-pre '
+        obj_all = obj_all + file_name_temp+'-obj '
+        commands_part1 = commands_part1 + cmd_set
+
+    commands_part2 = [
+        'cat '+sub_all+' > '+path_to_file+'-sub',
+        'rm '+sub_all,
+        'cat '+pre_all+' > '+path_to_file+'-pre',
+        'rm '+pre_all,
+        'cat '+obj_all+' > '+path_to_file+'-obj',
+        'rm '+obj_all,
         'sort '+path_to_file+'-sub | uniq > '+path_to_file+'-sub-all',
         'rm '+path_to_file+'-sub',
         'wc -l < '+path_to_file+'-sub-all > '+path_to_file+'-sub-all-count',
@@ -96,10 +119,15 @@ def generateBitMatDatabase(test):
         'cat '+path_to_file+'-common '+path_to_file+'-obj-left > '+path_to_file+'-obj-all',
         'rm '+path_to_file+'-sub-left',
         'rm '+path_to_file+'-obj-left',
+        'cat '+path_to_file_temp+' > '+path_to_file,
+        'wc -l < '+path_to_file+' > '+path_to_file+'-count',
         'python rdf-bridge/load-rdf.py sub '+path_to_file+' '+str(partition_size),
         'python rdf-bridge/load-rdf.py pre '+path_to_file+' '+str(partition_size),
         'python rdf-bridge/load-rdf.py obj '+path_to_file+' '+str(partition_size)
     ]
+
+    commands = commands_part1 + commands_part2
+
     executeCommands(commands, test)
     logger_obj.write_log('Finished commands to generate BitMat Database')
 
