@@ -18,7 +18,7 @@ logger_obj = logger.Logger(filename='rdf-bridge.log', instance_id=pid)
 executer_obj = executer.Executer()
 logger_obj.write_log('Program is started with process id: '+str(pid))
 
-if len(sys.argv) != 7:
+if len(sys.argv) != 8:
     logger_obj.write_log('Program needs path_to_file_temp, go path, path to config, funtion cmd, partition size and name for the generated file. Example: python bootstrap.py "data-store/rdf-sample-1 data-store/rdf-sample-2" /usr/local/go/bin/go config/rdf-sample.conf all 50 rdf-sample')
     exit()
 
@@ -28,6 +28,7 @@ partition_size=int(sys.argv[5])
 directory_name = 'data-store/'
 directory_name_bitmat = 'bitmat-data-store/'
 file_name = sys.argv[6]
+which = sys.argv[7]
 file_prefix = 'full-'
 file_prefix_b = 'bitmat-'
 path_to_file = directory_name+file_prefix+file_name
@@ -65,7 +66,7 @@ def cleanLogs():
 
 ''' Generates BitMat Database
 '''
-def generateBitMatDatabase(test):
+def generateBitMatDatabase(test, which):
     logger_obj.write_log('Running commands to generate BitMat Database')
 
     path_to_file_temp_list = path_to_file_temp.split(' ')
@@ -87,8 +88,9 @@ def generateBitMatDatabase(test):
             'sed -i \'s/\/\//:\/\//g\' '+file_name_temp+'-pre',
             'sort -u '+file_name_temp+' | awk -F: \'{print $3}\' > '+file_name_temp+'-obj',
             'sed -i \'s/\/\//:\/\//g\' '+file_name_temp+'-obj',
-            'sed -i \'s/:/ /g\' '+file_name_temp,
-            'sed -i \'s/\/\//:\/\//g\' '+file_name_temp,
+            'rm '+file_name_temp
+            # 'sed -i \'s/:/ /g\' '+file_name_temp,
+            # 'sed -i \'s/\/\//:\/\//g\' '+file_name_temp,
         ]
         sub_all = sub_all + file_name_temp+'-sub '
         pre_all = pre_all + file_name_temp+'-pre '
@@ -126,7 +128,12 @@ def generateBitMatDatabase(test):
         'python rdf-bridge/load-rdf.py obj '+path_to_file+' '+str(partition_size)
     ]
 
-    commands = commands_part1 + commands_part2
+    if which == '1':
+        commands = commands_part1
+    elif which == '2':
+        commands = commands_part2
+    else:
+        commands = commands_part1 + commands_part2
 
     executeCommands(commands, test)
     logger_obj.write_log('Finished commands to generate BitMat Database')
@@ -183,16 +190,16 @@ def makeConfig():
 
 if sys.argv[4] == 'all':
     cleanLogs()
-    generateBitMatDatabase(True)
+    generateBitMatDatabase(True, which)
     convertStringToInt()
     buildIndexes()
     makeConfig()
 elif sys.argv[4] == 'clean':
     cleanLogs()
 elif sys.argv[4] == 'generate':
-    generateBitMatDatabase(True)
+    generateBitMatDatabase(True, which)
 elif sys.argv[4] == 'test':
-    generateBitMatDatabase(False)
+    generateBitMatDatabase(False, which)
 elif sys.argv[4] == 'convert':
     convertStringToInt()
 elif sys.argv[4] == 'build':
