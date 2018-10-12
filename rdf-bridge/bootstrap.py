@@ -104,19 +104,19 @@ def generateBitMatDatabase(test, which):
         'rm '+pre_all,
         'cat '+obj_all+' > '+path_to_file+'-obj',
         'rm '+obj_all,
-        'sort '+path_to_file+'-sub | uniq > '+path_to_file+'-sub-all',
+        'sort '+path_to_file+'-sub -T /home/alamgir/ | uniq > '+path_to_file+'-sub-all',
         'rm '+path_to_file+'-sub',
         'wc -l < '+path_to_file+'-sub-all > '+path_to_file+'-sub-all-count',
-        'sort '+path_to_file+'-pre | uniq > '+path_to_file+'-pre-all',
+        'sort '+path_to_file+'-pre -T /home/alamgir/ | uniq > '+path_to_file+'-pre-all',
         'rm '+path_to_file+'-pre',
         'wc -l < '+path_to_file+'-pre-all > '+path_to_file+'-pre-all-count',
-        'sort '+path_to_file+'-obj | uniq > '+path_to_file+'-obj-all',
+        'sort '+path_to_file+'-obj -T /home/alamgir/ | uniq > '+path_to_file+'-obj-all',
         'rm '+path_to_file+'-obj',
         'wc -l < '+path_to_file+'-obj-all > '+path_to_file+'-obj-all-count',
-        'sort '+path_to_file+'-sub-all '+path_to_file+'-obj-all | uniq -d > '+path_to_file+'-common',
+        'sort '+path_to_file+'-sub-all '+path_to_file+'-obj-all -T /home/alamgir/ | uniq -d > '+path_to_file+'-common',
         'wc -l < '+path_to_file+'-common > '+path_to_file+'-common-count',
-        'sort '+path_to_file+'-sub-all '+path_to_file+'-common | uniq -u > '+path_to_file+'-sub-left',
-        'sort '+path_to_file+'-obj-all '+path_to_file+'-common | uniq -u > '+path_to_file+'-obj-left',
+        'sort '+path_to_file+'-sub-all '+path_to_file+'-common -T /home/alamgir/ | uniq -u > '+path_to_file+'-sub-left',
+        'sort '+path_to_file+'-obj-all '+path_to_file+'-common -T /home/alamgir/ | uniq -u > '+path_to_file+'-obj-left',
         'cat '+path_to_file+'-common '+path_to_file+'-sub-left > '+path_to_file+'-sub-all',
         'cat '+path_to_file+'-common '+path_to_file+'-obj-left > '+path_to_file+'-obj-all',
         'rm '+path_to_file+'-sub-left',
@@ -151,10 +151,10 @@ def convertStringToInt():
 def buildIndexes():
     logger_obj.write_log('Running commands to generate Indexes')
     commands = [
-        'sort -u -n -t: -k2 -k1 -k3 '+path_to_bitmat_file+' > '+path_to_bitmat_file+'_spo',
-        'sort -u -n -t: -k2 -k3 -k1 '+path_to_bitmat_file+' | awk -F: \'{print $3":"$2":"$1}\' > '+path_to_bitmat_file+'_ops',
-        'sort -u -n -t: -k1 -k2 -k3 '+path_to_bitmat_file+' | awk -F: \'{print $2":"$1":"$3}\' > '+path_to_bitmat_file+'_pso',
-        'sort -u -n -t: -k3 -k2 -k1 '+path_to_bitmat_file+' | awk -F: \'{print $2":"$3":"$1}\' > '+path_to_bitmat_file+'_pos',
+        'sort -T /home/alamgir/ -u -n -t: -k2 -k1 -k3 '+path_to_bitmat_file+' > '+path_to_bitmat_file+'_spo',
+        'sort -T /home/alamgir/ -u -n -t: -k2 -k3 -k1 '+path_to_bitmat_file+' | awk -F: \'{print $3":"$2":"$1}\' > '+path_to_bitmat_file+'_ops',
+        'sort -T /home/alamgir/ -u -n -t: -k1 -k2 -k3 '+path_to_bitmat_file+' | awk -F: \'{print $2":"$1":"$3}\' > '+path_to_bitmat_file+'_pso',
+        'sort -T /home/alamgir/ -u -n -t: -k3 -k2 -k1 '+path_to_bitmat_file+' | awk -F: \'{print $2":"$3":"$1}\' > '+path_to_bitmat_file+'_pos',
     ]
     executeCommands(commands, True)
     logger_obj.write_log('Finished commands to generate Indexes')
