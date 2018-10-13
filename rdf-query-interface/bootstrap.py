@@ -84,6 +84,14 @@ def responseIndex() :
         if i.find('.conf') != -1:
             body = body + '<option value="'+i+'">'+i+'</option>'
 
+    queryNumber = ''
+    ind = 1
+    while ind < 115:
+        queryNumber = queryNumber + '<option value="'+str(ind)+'">'+str(ind)+'</option>'
+        ind += 1
+        if ind > 15 and ind <101:
+            ind = 101
+
     body = body + """
                             </select>
                         </div>
@@ -92,20 +100,7 @@ def responseIndex() :
                             <label for="select_query">Select Query (Working: 1, 2, 3, 11, 14)</label>
                             <select class="form-control" id="select_query">
                                 <option value="0">Select query</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>
-                                <option value="11">11</option>
-                                <option value="12">12</option>
-                                <option value="13">13</option>
-                                <option value="14">14</option>
+                                """ + queryNumber + """
                             </select>
                         </div>
                         <div class="form-group">
