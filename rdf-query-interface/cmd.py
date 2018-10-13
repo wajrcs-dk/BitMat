@@ -25,13 +25,13 @@ if len(sys.argv) != 4:
     logger_obj.write_log('Program needs query_or_number, query and config')
     exit()
 
-query_or_number  = sys.argv[1]
+query_or_number  = int(sys.argv[1])
 query = sys.argv[2]
 config = sys.argv[3]
 respFile = ''
 
-if query_or_number == '1':
-    respFile = query_obj.response_query(logger_obj, query, True, config, True)
+if query_or_number > 0:
+    respFile = query_obj.response_query(logger_obj, str(query_or_number), True, config, True)
 else:
     respFile = query_obj.response_query(logger_obj, query, False, config, True)
 
