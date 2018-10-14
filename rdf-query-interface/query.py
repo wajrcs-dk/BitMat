@@ -119,7 +119,7 @@ class Query(object):
             cmd = 'bin/bitmat -l n -Q y -f '+config+' -q '+output_query_file+' -o output/rdf-query-interface.txt'
             
             time_a = time.time()
-            output = executer_obj.run(cmd)
+            output = executer_obj.run(cmd, print_result=cmd_out_new)
             time_b_4 = time.time() - time_a
             
             bitmat_print = output[1]
