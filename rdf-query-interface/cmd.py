@@ -24,7 +24,7 @@ logger_obj.write_log('RDF query interface program has started with process id: '
 
 query_obj = query.Query()
 
-if len(sys.argv) != 4:
+if len(sys.argv) != 5:
     logger_obj.write_log('Program needs query_or_number, query and config', to_print=False)
     exit()
 
