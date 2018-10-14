@@ -89,7 +89,8 @@ class Query(object):
         else:
             input_query = input_query_init
 
-        logger_obj.debug('Input Query', input_query)
+        if cmd_out == False:
+            logger_obj.debug('Input Query', input_query)
 
         time_a = time.time()
         input_query = input_query.replace('%20', ' ')
