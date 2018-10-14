@@ -40,7 +40,7 @@ else:
 
 respFile = respFile.replace('<br/>', "\n")
 
-if showResult == True:
+if showResult == '1':
     for line in respFile.split("\n"):
         if line.find('Total query time: ') != -1:
             time = line.split(': ')
