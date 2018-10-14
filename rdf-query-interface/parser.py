@@ -105,8 +105,8 @@ class Parser(object):
                                 listOf[o] = indexer
                                 listOfList.append(o)
                         
-                        print('SPO', s+p+o)
-                        print listOf
+                        '''print('SPO', s+p+o)
+                        print listOf'''
 
                     else:
                         output_query = '2'
