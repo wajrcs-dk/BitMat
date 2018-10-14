@@ -8,6 +8,7 @@ for i in range(1, 14):
     outputList = '=sum('
 
     for j in range(1, 10):
+        print cmd
         outputList = outputList + executer_obj.run(cmd, print_result=False)[2]
         if j <=9:
             outputList = outputList + ', '
