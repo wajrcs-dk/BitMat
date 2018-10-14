@@ -3,11 +3,11 @@ import executer
 
 executer_obj = executer.Executer()
 
-for i in range(1, 14):
+for i in range(1, 15):
     cmd = 'python rdf-query-interface/cmd.py '+str(i)+' "" config/lubm15gb.conf 1'
     outputList = '=sum('
 
-    for j in range(1, 10):
+    for j in range(1, 11):
         res = executer_obj.run(cmd, print_result=False)[1]
         res = res.replace("\n", '')
         outputList = outputList + res
