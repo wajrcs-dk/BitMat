@@ -113,7 +113,7 @@ class Query(object):
             executer_obj = executer.Executer()
             
             cmd = 'echo '' > output/rdf-query-interface.txt'
-            output = executer_obj.run(cmd)
+            output = executer_obj.run(cmd, print_result=!cmd_out)
 
             cmd = 'bin/bitmat -l n -Q y -f '+config+' -q '+output_query_file+' -o output/rdf-query-interface.txt'
             
