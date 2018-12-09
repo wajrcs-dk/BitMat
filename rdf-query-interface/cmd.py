@@ -7,7 +7,7 @@ import logger
 import sys
 import os
 import os.path
-import psutil
+# import psutil
 import urllib
 import query
 
@@ -17,7 +17,7 @@ if sys.version[0] == '2':
     reload(sys)
     sys.setdefaultencoding('utf8')
 
-pid = psutil.Process().pid
+pid = 1000+int(sys.argv[1]) # psutil.Process().pid
 logger_obj = logger.Logger(filename='rdf-query-interface.log', instance_id=pid)
 
 logger_obj.write_log('RDF query interface program has started with process id: '+str(pid), to_print=False)
