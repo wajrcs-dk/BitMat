@@ -137,7 +137,7 @@ int main(int args, char **argv)
 
 	std::cout << "args " << args << std::endl;
 
-	int args_tmp = (args - 8) % 5;
+	int args_tmp = (args - 10) % 5;
 	int q_count = 0, op_count = 0;
 	// Modification starts
 	int prune = 0;
@@ -151,7 +151,7 @@ int main(int args, char **argv)
 
 	printf("Copyright 2009, 2010 Medha Atre\n\n");
 
-	while((c = getopt(args, argv, "l:Q:f:p:q:o:")) != -1) {
+	while((c = getopt(args, argv, "l:Q:f:q:o:p:v:")) != -1) {
 		switch (c) {
 			case 'f':
 				parse_config_file(optarg);
