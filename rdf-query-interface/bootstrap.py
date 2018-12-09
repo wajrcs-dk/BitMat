@@ -198,5 +198,5 @@ def application(environ, start_response) :
 if __name__ == '__main__':
     from wsgiref.simple_server import make_server
     httpd = make_server('', 8089, application)
-    print "Serving on http://localhost:8089"
+    print ("Serving on http://localhost:8089")
     httpd.serve_forever()

@@ -44,6 +44,6 @@ if showResult == '1':
     for line in respFile.split("\n"):
         if line.find('Total query time: ') != -1:
             time = line.split(': ')
-            print time[1]
+            print (time[1])
 else:
-    print respFile
+    print (respFile)

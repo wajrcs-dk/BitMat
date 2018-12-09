@@ -17,4 +17,4 @@ for i in range(1, 15):
 
     outputList = outputList + ')/10'
 
-    print outputList
+    print (outputList)

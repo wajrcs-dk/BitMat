@@ -33,6 +33,17 @@ extern struct node *jvarsitr2[MAX_JVARS_IN_QUERY];
 unsigned char **subjmapping, **predmapping, **objmapping;
 unsigned char *submapfile, *predmapfile, *objmapfile;
 
+// Modification starts
+int verbose = 0;
+
+void verbose_output(std::string msg)
+{
+	if (verbose) {
+		printf("%s\n", msg);
+	}
+}
+// Modification ends
+
 ///////////////////////////////////////////////////////////
 void print_mem_usage()
 {
@@ -117,15 +128,20 @@ void test_function(char *fname_dump, unsigned int numbms, bool compfold, unsigne
 int main(int args, char **argv)
 {
 	struct timeval start_time, stop_time;
-	clock_t  t_start, t_end;
+	clock_t  t_start_all, t_start_parsing, t_start_prunning, t_start_result, t_end;
 	double curr_time;
 	double st, en;
 	int c = 0;
 	char qfile[25][124], outfile[25][124];
 	bool loaddata = false, querydata = true;
 
-	int args_tmp = (args - 7) % 4;
+	std::cout << "args " << args << std::endl;
+
+	int args_tmp = (args - 8) % 5;
 	int q_count = 0, op_count = 0;
+	// Modification starts
+	int prune = 0;
+	// Modification ends
 
 	if (args_tmp != 0) {
 		printf("Copyright 2009, 2010 Medha Atre\n\n");
@@ -135,7 +151,7 @@ int main(int args, char **argv)
 
 	printf("Copyright 2009, 2010 Medha Atre\n\n");
 
-	while((c = getopt(args, argv, "l:Q:f:q:o:")) != -1) {
+	while((c = getopt(args, argv, "l:Q:f:p:q:o:")) != -1) {
 		switch (c) {
 			case 'f':
 				parse_config_file(optarg);
@@ -158,6 +174,15 @@ int main(int args, char **argv)
 				strcpy(outfile[op_count], optarg);
 				op_count++;
 				break;
+			// Modification starts
+			// Added a new parameter to support different prune methods
+			case 'p':
+				prune = atoi(optarg);
+				break;
+			case 'v':
+				verbose = atoi(optarg);
+				break;
+			// Modification ends
 			default:
 				printf("Usage: bitmat -f config-file -q query-file -o res-output-file\n");
 				exit (-1);
@@ -274,42 +299,74 @@ int main(int args, char **argv)
 ///////////////////
 
 	if (querydata) {
+		t_start_all = clock();
+		t_start_parsing = clock();
 
 		cout << "*********** QUERING NOW ***********" << endl;
-
 		parse_query_and_build_graph(qfile[0]);
-//		parse_query_and_build_graph(qfile2);
-
 		cout << "Done with parse_query_and_build_graph" << endl;
 
 		gettimeofday(&start_time, (struct timezone *)0);
-		t_start = clock();
-
 		bool bushy = false;
 
 		if (!init_tp_nodes_new(bushy)) {
-			cout << "Query has 0 results" << endl;
+			cout << "Query has 0 results; Query parser is unable to find rspective triples" << endl;
+			printf("Total query time: %f\n", (((double)clock()) - t_start_all)/CLOCKS_PER_SEC);
 			return 0;
 		}
 
 		build_jvar_tree();
-		if (!bushy)
+		if (!bushy) {
 			populate_all_tp_bitmats();
+		}
 
-		if (!prune_triples_new(bushy)) {
-			cout << "**** Query has 0 results" << endl;
+		printf("Total query parsing time: %f\n", (((double)clock()) - t_start_parsing)/CLOCKS_PER_SEC);
+		t_start_prunning = clock();
+
+		// Modification starts
+		bool prune_result = false;
+		unsigned int number_triple_prune_tries = 0;
+		unsigned long number_triple_prunned = count_number_of_triples();
+
+		if (verbose) {
+			printf("Prune method is %d.\n", prune);
+		}
+
+		// Checks which prune method to apply.
+		switch (prune) {
+			case PRUNE_SIM:
+				prune_result = prune_triples_sim(bushy, verbose, number_triple_prune_tries);
+			break;
+
+			case PRUNE_ORIGINAL:
+			default:
+				prune_result = prune_triples_new(bushy);
+			break;
+		}
+
+		number_triple_prunned -= count_number_of_triples();
+
+		printf("Total query prunning time: %f\n", (((double)clock()) - t_start_prunning)/CLOCKS_PER_SEC);
+		
+		if (PRUNE_SIM == prune) {
+			printf("Total number of triples prunned: %d\n", number_triple_prunned);
+			printf("Total number of prunned tries: %d\n", number_triple_prune_tries);
+		}
+
+		if (!prune_result) {
+			// Modification ends
+			cout << "Query has 0 results; Prunning returned into no results" << endl;
+			printf("Total query time: %f\n", (((double)clock()) - t_start_all)/CLOCKS_PER_SEC);
 		} else {
+			t_start_result = clock();
 
 			FILE *ofstr = fopen(outfile[0], "w");
 			assert(ofstr != NULL);
 			setvbuf(ofstr, NULL, _IOFBF, 0x8000000);
 
 			if (bushy) {
-
 				assert(graph_jvar_nodes == 1);
-
 				JVAR *jvar = (JVAR *)graph[0].data;
-
 				unsigned int count = 1;
 
 				for (unsigned int i = 0; i < jvar->joinres_size; i++) {
@@ -323,49 +380,37 @@ int main(int args, char **argv)
 						}
 						count++;
 					}
-
 				}
 
-				fclose(ofstr);
-				gettimeofday(&stop_time, (struct timezone *)0);
-				st = start_time.tv_sec + (start_time.tv_usec/MICROSEC);
-				en = stop_time.tv_sec + (stop_time.tv_usec/MICROSEC);
-				curr_time = en-st;
+			} else {
+				//TODO: no need of all this for bushy joins
+				//Just list of tp->bitmat.subfold bits
 
-				printf("Total query time(gettimeofday): %f\n", curr_time);
-				printf("Total query time: %f\n", (((double)clock()) - t_start)/CLOCKS_PER_SEC);
+				fix_all_tp_bitmats();
 
-				return 0;
+				struct node *start_node = get_start_node_subgraph_matching();
+
+				spanning_tree(start_node, 1, TP_NODE);
+				// print_spanning_tree(TP_NODE);
+
+				TP *tp = (TP *)start_node->data;
+
+				// cout << "Start node is " << tp->sub << " " << tp->pred << " " << tp->obj << endl; 
+				// cout << "Match_query_graph" << endl;
+
+				match_query_graph(start_node, 0, NULL, ofstr);
 			}
 
-			//TODO: no need of all this for bushy joins
-			//Just list of tp->bitmat.subfold bits
-
-			fix_all_tp_bitmats();
-
-			struct node *start_node = get_start_node_subgraph_matching();
-
-			spanning_tree(start_node, 1, TP_NODE);
-//			print_spanning_tree(TP_NODE);
-
-			TP *tp = (TP *)start_node->data;
-
-//			cout << "Start node is " << tp->sub << " " << tp->pred << " " << tp->obj << endl; 
-//			cout << "Match_query_graph" << endl;
-
-			match_query_graph(start_node, 0, NULL, ofstr);
-			
 			fclose(ofstr);
+			printf("Total query result generation time: %f\n", (((double)clock()) - t_start_result)/CLOCKS_PER_SEC);
 		}
 
 		gettimeofday(&stop_time, (struct timezone *)0);
 		st = start_time.tv_sec + (start_time.tv_usec/MICROSEC);
 		en = stop_time.tv_sec + (stop_time.tv_usec/MICROSEC);
 		curr_time = en-st;
-
 		printf("Total query time(gettimeofday): %f\n", curr_time);
-		printf("Total query time: %f\n", (((double)clock()) - t_start)/CLOCKS_PER_SEC);
-
+		printf("Total query time: %f\n", (((double)clock()) - t_start_all)/CLOCKS_PER_SEC);
 	}
 
 	return 0;

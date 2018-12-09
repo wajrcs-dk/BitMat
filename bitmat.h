@@ -84,6 +84,11 @@ using namespace std;
 
 #define MICROSEC 		1000000.0
 
+// Modification starts
+#define PRUNE_ORIGINAL	1
+#define PRUNE_SIM		2
+// Modification ends
+
 extern map <std::string, std::string> config;
 extern unsigned int gnum_subs, gnum_preds, gnum_objs, gnum_comm_so, gsubject_bytes, gobject_bytes, gpredicate_bytes, gcommon_so_bytes, grow_size;
 extern unsigned int row_size_bytes, gap_size_bytes;
@@ -309,6 +314,11 @@ void print_spanning_tree(int nodetype);
 void build_jvar_tree(void);
 
 bool prune_triples_new(bool bushy);
+
+// Modification starts
+bool prune_triples_sim(bool bushy, int verbose, unsigned int &);
+unsigned long count_number_of_triples();
+// Modification ends
 
 bool populate_all_tp_bitmats();
 

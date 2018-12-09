@@ -80,4 +80,4 @@ class Logger(object):
         self.file_obj.close()
 
     def debug(self, msg, vars):
-        print msg + ': ' + str(vars)
+        print (msg + ': ' + str(vars))

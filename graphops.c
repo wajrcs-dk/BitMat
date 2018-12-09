@@ -2056,11 +2056,14 @@ void print_node_info(struct node *n)
 }
 
 ////////////////////////////////////////////////////////////
-bool prune_for_jvar(struct node *gnode, bool bushy)
+bool prune_for_jvar(struct node *gnode, bool bushy, bool verbose=false)
 {
 
 	JVAR *jvar = (JVAR *)gnode->data;
-//	cout << "prune_for_jvar: nodenum " << jvar->nodenum << endl;
+	
+	if (verbose) {
+		cout << "prune_for_jvar: nodenum " << jvar->nodenum << endl;
+	}
 
 	LIST *nextTP = gnode->nextTP;
 	struct timeval start_time, stop_time;
@@ -2072,22 +2075,24 @@ bool prune_for_jvar(struct node *gnode, bool bushy)
 	for (int i = 0; i < gnode->numTPs; i++) {
 		TP *tp = (TP *)nextTP->gnode->data;
 
-//		cout << "Processing tp " << tp->sub << " "<< tp->pred << " "<<tp->obj << endl;
+		if (verbose) {
+			cout << "prune_for_jvar: Processing tp " << tp->sub << " "<< tp->pred << " "<<tp->obj << endl;
+		}
 
 		if (tp->sub == jvar->nodenum) {
 			if (!subject_dim_join(jvar, tp)) {
-				cout << "join var " << jvar->nodenum << " has 0 res" << endl;
+				cout << "Sub join var " << jvar->nodenum << " has 0 res" << endl;
 				return false;
 			}
 
 		} else if (tp->obj == jvar->nodenum) {
 			if (!object_dim_join(jvar, tp)) {
-				cout << "join var " << jvar->nodenum << " has 0 res" << endl;
+				cout << "Obj join var " << jvar->nodenum << " has 0 res" << endl;
 				return false;
 			}
 		} else if (tp->pred == jvar->nodenum) {
 			if (!predicate_dim_join(jvar, tp)) {
-				cout << "join var " << jvar->nodenum << " has 0 res" << endl;
+				cout << "Pred join var " << jvar->nodenum << " has 0 res" << endl;
 				return false;
 			}
 
@@ -2097,7 +2102,10 @@ bool prune_for_jvar(struct node *gnode, bool bushy)
 
 		nextTP = nextTP->next;
 	}
-//	cout << "********#bits remaining after a join " << count_bits_in_row(jvar->joinres, jvar->joinres_size) << endl;
+	
+	if (verbose) {
+		cout << "prune_for_jvar: bits remaining after a join " << count_bits_in_row(jvar->joinres, jvar->joinres_size) << endl;
+	}
 
 	//Now unfold
 	if (!bushy) {
@@ -2105,7 +2113,11 @@ bool prune_for_jvar(struct node *gnode, bool bushy)
 		nextTP = gnode->nextTP;
 		for (int i = 0; i < gnode->numTPs; i++) {
 			TP *tp = (TP *)nextTP->gnode->data;
-//			cout << "Processing tp " << tp->sub << " "<< tp->pred << " "<<tp->obj << endl;
+			
+			if (verbose) {
+				cout << "prune_for_jvar: Processing tp again " << tp->sub << " "<< tp->pred << " "<<tp->obj << endl;
+			}
+
 			if (jvar->nodenum == tp->sub) {
 				subject_dim_unfold(jvar, tp);
 			} else if (jvar->nodenum == tp->obj) {
@@ -2116,7 +2128,11 @@ bool prune_for_jvar(struct node *gnode, bool bushy)
 	//			exit (-1);
 				predicate_dim_unfold(jvar, tp);
 			}
-//			cout << "*********#triples in bitmat after unfolding " << count_triples_in_bitmat(&tp->bitmat, tp->bitmat.dimension) << endl;
+
+			if (verbose) {
+				cout << "prune_for_jvar: triples in bitmat after unfolding " << count_triples_in_bitmat(&tp->bitmat, tp->bitmat.dimension) << endl;
+			}
+			
 			nextTP = nextTP->next;
 		}
 	}
@@ -2128,6 +2144,10 @@ bool prune_for_jvar(struct node *gnode, bool bushy)
 //////////////////////////////////////////////////////////////////
 bool prune_triples_new(bool bushy)
 {
+	// Modification starts
+	std::cout << "Prunning via prune_triples_new" << std::endl;
+	// Modification ends
+
 	for (int i = 0; i < graph_jvar_nodes; i++) {
 		if (!prune_for_jvar(jvarsitr2[i], bushy)) {
 			cout << "prune_for_jvar returned 0 res" << endl;
