@@ -3,6 +3,15 @@
 bool prune_for_jvar(struct node *gnode, bool bushy, bool verbose);
 extern vector<struct node *> leaf_nodes;
 
+int compare_uchar(unsigned char *a, unsigned char *b, int size) {
+    while(size-- > 0) {
+        if ( *a != *b ) { return (*a < *b ) ? -1 : 1; }
+        a++; b++;
+    }
+    return 0;
+}
+
+
 bool prune_triples_sim(bool bushy, int verbose, unsigned int &_try)
 {
     if (verbose) {
@@ -13,6 +22,14 @@ bool prune_triples_sim(bool bushy, int verbose, unsigned int &_try)
 
     unsigned char *previous_data[MAX_JVARS_IN_QUERY][MAX_TPS_IN_QUERY];
     unsigned char *current_data[MAX_JVARS_IN_QUERY][MAX_TPS_IN_QUERY];
+
+    for (int i = 0; i < graph_jvar_nodes; i++) {
+        struct node *gnode = jvarsitr2[i];
+        for (int j = 0; j < gnode->numTPs; j++) {
+            previous_data[i][j] = NULL;
+            current_data[i][j] = NULL;
+        }
+    }
 
     while (_keep_checking) {
 
@@ -46,6 +63,8 @@ bool prune_triples_sim(bool bushy, int verbose, unsigned int &_try)
             }
         }
 
+        
+
         // Checking if there is a change
         for (int i = 0; i < graph_jvar_nodes; i++) {
             // There is no change then keep checking untill the loop is over
@@ -54,6 +73,59 @@ bool prune_triples_sim(bool bushy, int verbose, unsigned int &_try)
             for (int j = 0; j < gnode->numTPs; j++) {
                 TP *tp = (TP *)nextTP->gnode->data;
 
+                current_data[i][j] = NULL;
+                size_t final_length = 0;
+                size_t old_length = 0;
+
+                for (std::list<struct row>::iterator it = tp->bitmat.bm.begin(); it != tp->bitmat.bm.end(); it++) {
+                    final_length += strlen((char*)(*it).data);
+                }
+
+                current_data[i][j] = (unsigned char *) malloc(final_length);
+                
+                for (std::list<struct row>::iterator it = tp->bitmat.bm.begin(); it != tp->bitmat.bm.end(); it++) {
+                    size_t temp_length = strlen((char*)(*it).data);
+                    memcpy(current_data[i][j]+old_length, (*it).data, temp_length);
+                    old_length += temp_length;
+                }
+
+                if (verbose) {
+                    cout << "i:" << i << " j:" << j << " final:" << final_length << " strlen:" << strlen((char *)current_data[i][j]) << endl;
+                }
+
+                printf("Current Value: %u\n", current_data[i][j]);
+                if (previous_data[i][j] != NULL) {
+                    printf("Previous Value: %u\n", previous_data[i][j]);
+                } else {
+                    printf("Previous Value: NULL\n");
+                }
+
+                cout << "Size P: " << sizeof(previous_data[i][j]) << endl;
+                cout << "Size C: " << sizeof(current_data[i][j]) << endl;
+
+                if (previous_data[i][j] != NULL && memcmp(previous_data[i][j], current_data[i][j], sizeof(previous_data[i][j])) != 0) {
+                    
+                    cout << "Keep Checking is true" << endl;
+
+                    _keep_checking = true;
+                } else {
+                    cout << "Keep Checking is false" << endl;
+                }
+
+                if (previous_data[i][j] != NULL) {
+                    cout << "Manual compare: " << compare_uchar(previous_data[i][j], current_data[i][j], sizeof(previous_data[i][j])) << endl;
+                }
+
+                // clear previous
+                if (previous_data[i][j] != NULL) {
+                    free(previous_data[i][j]);
+                }
+
+                previous_data[i][j] = (unsigned char *) malloc(final_length);
+                memcpy(previous_data[i][j], current_data[i][j], final_length);
+                free(current_data[i][j]);
+
+                /*
                 current_data[i][j] = NULL;
                 
                 for (std::list<struct row>::iterator it = tp->bitmat.bm.begin(); it != tp->bitmat.bm.end(); it++) {
@@ -93,19 +165,11 @@ bool prune_triples_sim(bool bushy, int verbose, unsigned int &_try)
 
                 if (previous_data[i][j] != NULL && sizeof(current_data[i][j]) == sizeof(previous_data[i][j]) && memcmp(previous_data[i][j], current_data[i][j], sizeof(current_data[i][j])) != 0) {
                     _keep_checking = true;
-                } else {
-                    /*if (_try>1) {
-                        if (verbose) {
-                            cout << "I am stable at " << _try << endl;
-                        }
-                    }
-                    */
                 }
 
                 cout << "Begin 8" << endl;
-
-
                 previous_data[i][j] = current_data[i][j];
+                */
 
                 if (_keep_checking) {
                     break;
@@ -118,9 +182,11 @@ bool prune_triples_sim(bool bushy, int verbose, unsigned int &_try)
         }
 
         // Atleast run two times, so that previous_data variable can be compared to current_data variable
-        if (_try < 2) {
+        if (_try < 3) {
             _keep_checking = true;
         }
+
+        printf("Middel Total number of triples prunned: %d\n", count_number_of_triples());
     }
 
     if (verbose) {
