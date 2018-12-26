@@ -18,6 +18,8 @@ bool prune_triples_sim(bool bushy, int verbose, unsigned int &_try)
 
         _try++;
 
+        _keep_checking = false;
+
         if (verbose) {
             printf("prune_triples_sim: At Try %d.\n", _try);
         }
@@ -55,16 +57,24 @@ bool prune_triples_sim(bool bushy, int verbose, unsigned int &_try)
                 current_data[i][j] = NULL;
                 
                 for (std::list<struct row>::iterator it = tp->bitmat.bm.begin(); it != tp->bitmat.bm.end(); it++) {
+                    
+                    cout << "Begin 1" << endl;
+
                     if (current_data[i][j] == NULL) {
+                        cout << "Begin 2" << endl;
                         current_data[i][j] = (*it).data;
+                        cout << "Begin 3" << endl;
                     } else {
+                        cout << "Begin 4" << endl;
                         // string concatenation
                         unsigned char * temp = current_data[i][j];
                         size_t old_length = strlen((char*)temp);
                         size_t new_length = strlen((char*)(*it).data);
                         current_data[i][j] = (unsigned char *) malloc(old_length+new_length);
+                        cout << "Begin 5" << endl;
                         memcpy(current_data[i][j], temp, old_length);
                         memcpy(current_data[i][j]+old_length, (*it).data, new_length);
+                        cout << "Begin 6" << endl;
                     }
 
                     if (verbose) {
@@ -72,17 +82,27 @@ bool prune_triples_sim(bool bushy, int verbose, unsigned int &_try)
                     }
                 }
 
-                if (previous_data[i][j] != NULL && memcmp(previous_data[i][j], current_data[i][j], sizeof(current_data[i][j])) != 0) {
+                cout << "Begin 7" << endl;
+
+                cout << "i:" << i << " j:" << j << endl;
+
+                printf("Current Value: %u\n", current_data[i][j]);
+                if (previous_data != NULL) {
+                    printf("Previous Value: %u\n", previous_data[i][j]);
+                }
+
+                if (previous_data[i][j] != NULL && sizeof(current_data[i][j]) == sizeof(previous_data[i][j]) && memcmp(previous_data[i][j], current_data[i][j], sizeof(current_data[i][j])) != 0) {
                     _keep_checking = true;
                 } else {
-                    if (_try>1) {
+                    /*if (_try>1) {
                         if (verbose) {
                             cout << "I am stable at " << _try << endl;
                         }
                     }
-                    _keep_checking = false;
+                    */
                 }
-                
+
+                cout << "Begin 8" << endl;
 
 
                 previous_data[i][j] = current_data[i][j];
@@ -101,6 +121,10 @@ bool prune_triples_sim(bool bushy, int verbose, unsigned int &_try)
         if (_try < 2) {
             _keep_checking = true;
         }
+    }
+
+    if (verbose) {
+        cout << "I am stable at " << _try << endl;
     }
 
     tree_edges_map.erase(tree_edges_map.begin(), tree_edges_map.end());

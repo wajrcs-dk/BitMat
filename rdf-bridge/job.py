@@ -15,8 +15,9 @@ class Job(object):
     path_to_bitmat_file = ''
     logger_obj = None
     job_id = ''
+    db_key = '';
 
-    def __init__(self, logger_obj, partition_size, path_to_file, path_to_bitmat_file):
+    def __init__(self, logger_obj, partition_size, path_to_file, path_to_bitmat_file, db_key):
         """
         Constructor
         Args:
@@ -26,6 +27,7 @@ class Job(object):
         self.partition_size = partition_size
         self.path_to_file = path_to_file
         self.path_to_bitmat_file = path_to_bitmat_file
+        self.db_key = db_key
 
     def generate_input(self, count):
         
@@ -43,7 +45,7 @@ class Job(object):
             if endLimit > count:
                 endLimit = count
 
-            jobParams = ' '+self.path_to_file +' ' + str(startLimit)+' '+str(endLimit)+' '+self.job_id
+            jobParams = ' '+self.path_to_file +' ' + str(startLimit)+' '+str(endLimit)+' '+self.job_id+' '+self.db_key
             job_item = 'CMD|'+job+'|PARAMS|'+jobParams+"\n"
             file_obj.write(job_item)
             startLimit = startLimit + self.partition_size

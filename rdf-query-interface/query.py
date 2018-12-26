@@ -8,6 +8,11 @@ r = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 class Query(object):
 
+    file_name = ''
+
+    def __init__(self, file_name):
+        self.file_name = file_name
+
     def get_query(self, query_no):
         try:
             with open('rdf-query-interface/queries/input_query_'+query_no+'.sql', "r") as f:
@@ -17,14 +22,14 @@ class Query(object):
 
     def write_query(self, query_no, output_query):
         output_query = output_query.replace('<br/>', "\n")
-        file = 'config/input_query_'+query_no+'.sql'
+        file = 'bitmat-queries/input_query_'+query_no+'.sql'
         file_obj = open(file, 'w')
         file_obj.write(output_query)
         file_obj.close()
         return file
 
     def parse_query_output(self, row_data, prefix, index, return_str):
-        get = r.get(prefix+'-'+row_data[index])
+        get = r.get(self.file_name+'-'+prefix+'-'+row_data[index])
 
         if get != None:
             return_str = return_str + get
@@ -95,7 +100,7 @@ class Query(object):
         time_a = time.time()
         input_query = input_query.replace('%20', ' ')
         qParser = parser.Parser(input_query)
-        output_query = qParser.parser()
+        output_query = qParser.parser(self.file_name)
         time_b_2 = time.time() - time_a
 
         result = ''
@@ -116,7 +121,7 @@ class Query(object):
             cmd_out_new = False
             output = executer_obj.run(cmd, print_result=cmd_out_new)
 
-            cmd = 'bin/bitmat -l n -Q y -f '+config+' -q '+output_query_file+' -o output/rdf-query-interface.txt'
+            cmd = 'bin/bitmat -l n -Q y -f '+config+' -p 1 -v 1 -q '+output_query_file+' -o output/rdf-query-interface.txt'
             
             time_a = time.time()
             output = executer_obj.run(cmd, print_result=cmd_out_new)

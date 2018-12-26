@@ -123,9 +123,9 @@ def generateBitMatDatabase(test, which):
         'rm '+path_to_file+'-obj-left',
         'cat '+path_to_file_temp+' > '+path_to_file,
         'wc -l < '+path_to_file+' > '+path_to_file+'-count',
-        'python rdf-bridge/load-rdf.py sub '+path_to_file+' '+str(partition_size),
-        'python rdf-bridge/load-rdf.py pre '+path_to_file+' '+str(partition_size),
-        'python rdf-bridge/load-rdf.py obj '+path_to_file+' '+str(partition_size)
+        'python rdf-bridge/load-rdf.py sub '+path_to_file+' '+str(partition_size)+' '+file_name,
+        'python rdf-bridge/load-rdf.py pre '+path_to_file+' '+str(partition_size)+' '+file_name,
+        'python rdf-bridge/load-rdf.py obj '+path_to_file+' '+str(partition_size)+' '+file_name
     ]
 
     if which == '1':
@@ -142,7 +142,7 @@ def generateBitMatDatabase(test, which):
 '''
 def convertStringToInt():
     logger_obj.write_log('Executing job now')
-    job_obj = job.Job(logger_obj, partition_size, path_to_file, path_to_bitmat_file)
+    job_obj = job.Job(logger_obj, partition_size, path_to_file, path_to_bitmat_file, file_name)
     job_obj.execute()
     logger_obj.write_log('Job finished')
 
@@ -163,7 +163,7 @@ def buildIndexes():
 '''
 def makeConfig():
     logger_obj.write_log('Making config file')
-    job_obj = job.Job(logger_obj, partition_size, path_to_file, path_to_bitmat_file)
+    job_obj = job.Job(logger_obj, partition_size, path_to_file, path_to_bitmat_file, file_name)
     file_content = ''
     file_content = file_content+ 'BITMATDUMPFILE_SPO=database/uniprot_800m_spo_pdump'+ "\n"
     file_content = file_content+ 'BITMATDUMPFILE_OPS=database/uniprot_800m_ops_pdump'+ "\n"

@@ -312,6 +312,7 @@ int main(int args, char **argv)
 		if (!init_tp_nodes_new(bushy)) {
 			cout << "Query has 0 results; Query parser is unable to find rspective triples" << endl;
 			printf("Total query time: %f\n", (((double)clock()) - t_start_all)/CLOCKS_PER_SEC);
+			printf("Number of results: %d\n", 0);
 			return 0;
 		}
 
@@ -327,6 +328,8 @@ int main(int args, char **argv)
 		bool prune_result = false;
 		unsigned int number_triple_prune_tries = 0;
 		unsigned long number_triple_prunned = count_number_of_triples();
+
+		printf("Before Total number of triples prunned: %d\n", number_triple_prunned);
 
 		if (verbose) {
 			printf("Prune method is %d.\n", prune);
@@ -347,15 +350,17 @@ int main(int args, char **argv)
 		number_triple_prunned -= count_number_of_triples();
 
 		printf("Total query prunning time: %f\n", (((double)clock()) - t_start_prunning)/CLOCKS_PER_SEC);
+		printf("After Total number of triples prunned: %d\n", number_triple_prunned);
 		
 		if (PRUNE_SIM == prune) {
-			printf("Total number of triples prunned: %d\n", number_triple_prunned);
+			
 			printf("Total number of prunned tries: %d\n", number_triple_prune_tries);
 		}
 
 		if (!prune_result) {
 			// Modification ends
 			cout << "Query has 0 results; Prunning returned into no results" << endl;
+			printf("Number of results: %d\n", 0);
 			printf("Total query time: %f\n", (((double)clock()) - t_start_all)/CLOCKS_PER_SEC);
 		} else {
 			t_start_result = clock();
@@ -402,6 +407,18 @@ int main(int args, char **argv)
 			}
 
 			fclose(ofstr);
+
+			int lines = 0;
+			int ch = 0;
+			FILE *fp = fopen(outfile[0], "r");
+			while (!feof(fp)) {
+				ch = fgetc(fp);
+				if (ch == '\n') {
+					lines++;
+				}
+			}
+			printf("Number of results: %d\n", lines);
+
 			printf("Total query result generation time: %f\n", (((double)clock()) - t_start_result)/CLOCKS_PER_SEC);
 		}
 

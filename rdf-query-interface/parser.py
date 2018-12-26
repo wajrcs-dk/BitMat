@@ -29,7 +29,7 @@ class Parser(object):
                 if len(line_data) == 3:
                     self.prefix_indexer[line_data[1]] = line_data[2]
 
-    def parser(self):
+    def parser(self, file_name):
 
         self.prefix_parser()
         input_data = self.input_query.split('{')
@@ -134,7 +134,7 @@ class Parser(object):
                             else:
                                 output_query = output_query + '0'
                         else:
-                            output_query = output_query + r.get('sub-'+s)
+                            output_query = output_query + r.get(file_name+'-sub-'+s)
 
                         output_query = output_query + ':'
 
@@ -145,7 +145,7 @@ class Parser(object):
                                 output_query = output_query + '0'
                         else:
                             pNew = self.predicate_indexer[p]
-                            output_query = output_query + r.get('pre-'+pNew)
+                            output_query = output_query + r.get(file_name+'-pre-'+pNew)
 
                         output_query = output_query + ':'
 
@@ -155,11 +155,11 @@ class Parser(object):
                             else:
                                 output_query = output_query + '0'
                         else:
-                            if r.get('obj-'+o) == None:
-                                output_query = 'Redis > 404 error for o: '+self.escape(o)+'<br/>'
+                            if r.get(file_name+'-obj-'+o) == None:
+                                output_query = 'Redis > 404 error for o: '+self.escape(o)+' Redis Key '+file_name+'-obj-'+o+'<br/>'
                                 break
                             else:
-                                output_query = output_query + r.get('obj-'+o)
+                                output_query = output_query + r.get(file_name+'-obj-'+o)
 
                         output_query = output_query + '<br/>'
                     else:

@@ -18,8 +18,10 @@ file_path_source = sys.argv[1]
 start_line = sys.argv[2]
 end_line = sys.argv[3]
 job_id = sys.argv[4]
+db_key = sys.argv[5]
+
 to_print = False
-if len(sys.argv) == 6:
+if len(sys.argv) == 7:
     to_print = True
 logger_obj.write_log('Program is started with process id: '+str(pid), 1, to_print)
 
@@ -78,9 +80,9 @@ for n,line in enumerate(fp):
             data_ids.append(result[0])
     '''
 
-    data_ids.append(r.get('sub-'+data[0]))
-    data_ids.append(r.get('pre-'+data[1]))
-    data_ids.append(r.get('obj-'+data[2]))
+    data_ids.append(r.get(db_key+'-sub-'+data[0]))
+    data_ids.append(r.get(db_key+'-pre-'+data[1]))
+    data_ids.append(r.get(db_key+'-obj-'+data[2]))
 
     if len(data_ids) == 3:
         file_obj.write(data_ids[0]+':'+data_ids[1]+':'+data_ids[2]+"\n")

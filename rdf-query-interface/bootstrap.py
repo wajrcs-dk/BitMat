@@ -18,8 +18,9 @@ if sys.version[0] == '2':
 pid = psutil.Process().pid
 logger_obj = logger.Logger(filename='rdf-query-interface.log', instance_id=pid)
 logger_obj.write_log('RDF query interface program has started with process id: '+str(pid))
+file_name  = sys.argv[1]
 
-query_obj = query.Query()
+query_obj = query.Query(file_name)
 
 def get_files(target_dir):
     item_list = os.listdir(target_dir)
