@@ -316,7 +316,7 @@ void build_jvar_tree(void);
 bool prune_triples_new(bool bushy);
 
 // Modification starts
-bool prune_triples_sim(bool bushy, int verbose, unsigned int &);
+bool prune_triples_sim(bool bushy, int verbose, unsigned int &, unsigned long &);
 unsigned long count_number_of_triples();
 // Modification ends
 

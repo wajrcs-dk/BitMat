@@ -2056,7 +2056,7 @@ void print_node_info(struct node *n)
 }
 
 ////////////////////////////////////////////////////////////
-bool prune_for_jvar(struct node *gnode, bool bushy, bool verbose=false)
+bool prune_for_jvar(struct node *gnode, bool bushy, bool verbose=false, bool cnter=false)
 {
 
 	JVAR *jvar = (JVAR *)gnode->data;
@@ -2129,8 +2129,14 @@ bool prune_for_jvar(struct node *gnode, bool bushy, bool verbose=false)
 				predicate_dim_unfold(jvar, tp);
 			}
 
+			unsigned long cnt = 0;
+
+			if (cnter) {
+				cnt = count_triples_in_bitmat(&tp->bitmat, tp->bitmat.dimension);
+			}
+
 			if (verbose) {
-				cout << "prune_for_jvar: triples in bitmat after unfolding " << count_triples_in_bitmat(&tp->bitmat, tp->bitmat.dimension) << endl;
+				cout << "prune_for_jvar: triples in bitmat after unfolding " << cnt << endl;
 			}
 			
 			nextTP = nextTP->next;

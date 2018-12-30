@@ -327,10 +327,8 @@ int main(int args, char **argv)
 		// Modification starts
 		bool prune_result = false;
 		unsigned int number_triple_prune_tries = 0;
-		unsigned long number_triple_prunned = count_number_of_triples();
-
-		printf("Before Total number of triples prunned: %d\n", number_triple_prunned);
-
+		unsigned long number_triple_prunned = 0;
+		
 		if (verbose) {
 			printf("Prune method is %d.\n", prune);
 		}
@@ -338,7 +336,8 @@ int main(int args, char **argv)
 		// Checks which prune method to apply.
 		switch (prune) {
 			case PRUNE_SIM:
-				prune_result = prune_triples_sim(bushy, verbose, number_triple_prune_tries);
+				prune_result = prune_triples_sim(bushy, verbose, number_triple_prune_tries, number_triple_prunned);
+
 			break;
 
 			case PRUNE_ORIGINAL:
@@ -347,13 +346,11 @@ int main(int args, char **argv)
 			break;
 		}
 
-		number_triple_prunned -= count_number_of_triples();
-
 		printf("Total query prunning time: %f\n", (((double)clock()) - t_start_prunning)/CLOCKS_PER_SEC);
-		printf("After Total number of triples prunned: %d\n", number_triple_prunned);
+		
 		
 		if (PRUNE_SIM == prune) {
-			
+			printf("Total number of triples prunned: %lu\n", number_triple_prunned);
 			printf("Total number of prunned tries: %d\n", number_triple_prune_tries);
 		}
 
@@ -408,17 +405,6 @@ int main(int args, char **argv)
 
 			fclose(ofstr);
 
-			int lines = 0;
-			int ch = 0;
-			FILE *fp = fopen(outfile[0], "r");
-			while (!feof(fp)) {
-				ch = fgetc(fp);
-				if (ch == '\n') {
-					lines++;
-				}
-			}
-			printf("Number of results: %d\n", lines);
-
 			printf("Total query result generation time: %f\n", (((double)clock()) - t_start_result)/CLOCKS_PER_SEC);
 		}
 
@@ -428,6 +414,17 @@ int main(int args, char **argv)
 		curr_time = en-st;
 		printf("Total query time(gettimeofday): %f\n", curr_time);
 		printf("Total query time: %f\n", (((double)clock()) - t_start_all)/CLOCKS_PER_SEC);
+
+		int lines = 0;
+		int ch = 0;
+		FILE *fp = fopen(outfile[0], "r");
+		while (!feof(fp)) {
+			ch = fgetc(fp);
+			if (ch == '\n') {
+				lines++;
+			}
+		}
+		printf("Number of results: %d\n", lines);
 	}
 
 	return 0;
