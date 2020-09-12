@@ -15,7 +15,7 @@ class Query(object):
 
     def get_query(self, query_no):
         try:
-            with open('rdf-query-interface/queries/input_query_'+query_no+'.sql', "r") as f:
+            with open('rdf-query-interface/queries/dbpedia/input_query_'+query_no+'.sql', "r") as f:
                 return f.read()
         except Exception:
             return ''
@@ -49,12 +49,20 @@ class Query(object):
         return_str = 'Subject|Predicate|Object - Subject|Predicate|Object'+"\n"
         qp_obj = parser.Parser('')
 
+        length = 10
+        index = 0
+
         try:
             with open('output/rdf-query-interface.txt', 'r') as f:
                 result = f.read()
                 rows = result.split("\n")
 
                 for row_data in rows:
+                    index += 1
+
+                    if index > length :
+                        break
+
                     row_data = row_data.split(':')
 
                     if len(row_data) >= 6:
@@ -121,7 +129,8 @@ class Query(object):
             cmd_out_new = False
             output = executer_obj.run(cmd, print_result=cmd_out_new)
 
-            cmd = 'bin/bitmat -l n -Q y -f '+config+' -p 1 -v 1 -q '+output_query_file+' -o output/rdf-query-interface.txt'
+            cmd = 'bin/bitmat -l n -Q y -f '+config+' -p 1 -v 0 -q '+output_query_file+' -o output/rdf-query-interface.txt'
+            # cmd = ''
             
             time_a = time.time()
             output = executer_obj.run(cmd, print_result=cmd_out_new)

@@ -1,3 +1,5 @@
+# coding=utf-8
+
 import os
 import sys
 import executer
@@ -80,11 +82,30 @@ for n,line in enumerate(fp):
             data_ids.append(result[0])
     '''
 
+    data[1] = data[1].replace(':', '')
+    data[1] = data[1].replace('http//', 'http://')
+
+    data[0] = data[0].replace(':', '')
+    data[0] = data[0].replace('http//', 'http://')
+
+    data[2] = data[2].replace(':', '')
+    data[2] = data[2].replace('http//', 'http://')
+
     data_ids.append(r.get(db_key+'-sub-'+data[0]))
     data_ids.append(r.get(db_key+'-pre-'+data[1]))
     data_ids.append(r.get(db_key+'-obj-'+data[2]))
 
+    print db_key+'-'
+    print data
+    print data_ids
+
     if len(data_ids) == 3:
+        '''print db_key+'-sub-'+data[0]
+        print db_key+'-pre-'+data[1]
+        print db_key+'-obj-'+data[2]
+        print data_ids[0]
+        print data_ids[1]
+        print data_ids[2]'''
         file_obj.write(data_ids[0]+':'+data_ids[1]+':'+data_ids[2]+"\n")
     else:
         logger_obj.write_log('Data length on line '+str(m)+' is not 3: '+str(len(data_ids)), 3, to_print)

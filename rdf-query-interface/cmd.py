@@ -33,25 +33,17 @@ config = sys.argv[3]
 show_result = sys.argv[4]
 respFile = ''
 
-print "1"
-
 if query_or_number > 0:
     respFile = query_obj.response_query(logger_obj, str(query_or_number), True, config, True)
 else:
     respFile = query_obj.response_query(logger_obj, query, False, config, True)
 
-print respFile
-
 respFile = respFile.replace('<br/>', "\n")
 
-print "2"
+print (respFile)
 
 if show_result == '1':
     for line in respFile.split("\n"):
         if line.find('Total query time: ') != -1:
             time = line.split(': ')
             print (time[1])
-else:
-    print (respFile)
-
-print "3"

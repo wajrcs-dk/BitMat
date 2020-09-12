@@ -14,9 +14,7 @@ int compare_uchar(unsigned char *a, unsigned char *b, int size) {
 
 bool prune_triples_sim(bool bushy, int verbose, unsigned int &_try, unsigned long &_prunned)
 {
-    if (verbose) {
-        std::cout << "prune_triples_sim: Prunning via prune_triples_sim" << std::endl;
-    }
+    std::cout << "prune_triples_sim: Prunning via prune_triples_sim" << std::endl;
     
     bool _keep_checking = true;
     unsigned long previous = 0, current = count_number_of_triples();
@@ -46,7 +44,7 @@ bool prune_triples_sim(bool bushy, int verbose, unsigned int &_try, unsigned lon
                 struct node *gnode = jvarsitr2[graph_jvar_nodes - 1 - i];
                 //The node under consideration is not a leaf node
                 if (find(leaf_nodes.begin(), leaf_nodes.end(), gnode) == leaf_nodes.end()) {
-                    if (!prune_for_jvar(gnode, bushy, verbose, true)) {
+                    if (!prune_for_jvar(gnode, bushy, verbose, true)) {address_order
                         cout << "prune_for_jvar returned2 0 res" << endl;
                         return false;
                     }

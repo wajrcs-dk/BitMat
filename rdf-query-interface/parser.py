@@ -54,17 +54,15 @@ class Parser(object):
 
                     if len(condition) == 3:
                         p = condition[1].split(':')
-
-                        if len(p) == 2:
-                            p1 = p[0]+':'
-
-                            if p1 in self.prefix_indexer:
-                                value = self.prefix_indexer[p1].replace('>', '')
-                                self.predicate_indexer[condition[1]] = value + p[1]+'>'
-
-                            else:
-                                output_query = '4'
-                                break
+                        if p[0] != '<http':
+                            if len(p) == 2:
+                                p1 = p[0]+':'
+                                if p1 in self.prefix_indexer:
+                                    value = self.prefix_indexer[p1].replace('>', '')
+                                    self.predicate_indexer[condition[1]] = value + p[1]+'>'
+                                else:
+                                    output_query = '4'
+                                    break
 
                     else:
                         output_query = '3'
@@ -144,7 +142,11 @@ class Parser(object):
                             else:
                                 output_query = output_query + '0'
                         else:
-                            pNew = self.predicate_indexer[p]
+                            pNew = ''
+                            if p in self.predicate_indexer: 
+                                pNew = self.predicate_indexer[p]
+                            else:
+                                pNew = p
                             output_query = output_query + r.get(file_name+'-pre-'+pNew)
 
                         output_query = output_query + ':'

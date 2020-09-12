@@ -122,6 +122,8 @@ def generateBitMatDatabase(test, which):
         'rm '+path_to_file+'-sub-left',
         'rm '+path_to_file+'-obj-left',
         'cat '+path_to_file_temp+' > '+path_to_file,
+        'sed -i \'s/://g\' '+path_to_file,
+        'sed -i \'s/\/\//:\/\//g\' '+path_to_file,
         'wc -l < '+path_to_file+' > '+path_to_file+'-count',
         'python rdf-bridge/load-rdf.py sub '+path_to_file+' '+str(partition_size)+' '+file_name,
         'python rdf-bridge/load-rdf.py pre '+path_to_file+' '+str(partition_size)+' '+file_name,
