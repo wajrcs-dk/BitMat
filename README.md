@@ -1,6 +1,6 @@
-# BitMat - In memory RDF Storage & Query Processing with Dual Simulation Pruning.
+# BitMat - In memory RDF Storage & Query Processing with Dual Simulation Pruning
 
-For more information on BitMat please see: http://www.cse.iitk.ac.in/users/atrem
+For more information on BitMat please see: http://www.cse.iitk.ac.in/users/atrem<br>
 For more details on Query Processing with Dual Simulation Pruning please see: https://www.slideshare.net/wajrcs/rdf-join-query-processing-with-dual-simulation-pruning
 
 # Example Usage
